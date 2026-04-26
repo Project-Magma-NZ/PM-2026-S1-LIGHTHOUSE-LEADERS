@@ -12,8 +12,10 @@ const RatingQuestion = ({ id, title, badge, rating, onRate }: RatingQuestionProp
     return (
         <div id={id}>
             {badge && <div className="survey-badge">{badge}</div>}
-            <h2 className="survey-question">{title}</h2>
-            <p className="survey-question-subtitle">Rate yourself on a scale of 1 to 7, where 1 is "Not at all" and 7 is "Completely"</p>
+            <div className="survey-question-header">
+                <h2 className="survey-question">{title}</h2>
+                <p className="survey-question-subtitle">Rate yourself on a scale of 1 to 7, where 1 is "Not at all" and 7 is "Completely"</p>
+            </div>
             <div className="survey-rating-labels">
                 <span>Not at all</span>
                 <span>Completely</span>

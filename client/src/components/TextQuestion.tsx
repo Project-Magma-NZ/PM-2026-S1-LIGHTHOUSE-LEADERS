@@ -10,8 +10,11 @@ const TextQuestion = ({ id, title, placeholder, value, onChange }: TextQuestionP
     return (
         <div id={id}>
             <div className="survey-badge">Reflection Question</div>
-            <h2 className="survey-question">{title}</h2>
-            <p className="survey-question-subtitle">Take a moment to reflect and share your thoughts</p>
+            <div className="survey-question-header">
+                <h2 className="survey-question">{title}</h2>
+                <p className="survey-question-subtitle">Take a moment to reflect and share your thoughts</p>
+            </div>
+
             <textarea
                 className="survey-textarea"
                 placeholder={placeholder}

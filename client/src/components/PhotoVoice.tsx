@@ -18,11 +18,15 @@ const PhotoVoice = ({ photoPreview, caption, onPhotoUpload, onCaptionChange }: P
 
     return (
         <article className="survey-card">
-            <div className="survey-badge">PhotoVoice</div>
-            <h2 className="survey-question">Share Your Story</h2>
-            <p className="survey-photovoice-desc">
-                Upload a photo that represents you as a leader or how you're feeling right now, and give it a voice with a caption.
-            </p>
+            <div className="survey-question-header">
+                <div>
+                    <div className="survey-badge">PhotoVoice</div>
+                </div>
+                <h2 className="survey-question">Share Your Story</h2>
+                <p className="survey-photovoice-desc">
+                    Upload a photo that represents you as a leader or how you're feeling right now, and give it a voice with a caption.
+                </p>
+            </div>
 
             <div className="survey-photo-upload">
                 {!photoPreview ? (
@@ -45,16 +49,17 @@ const PhotoVoice = ({ photoPreview, caption, onPhotoUpload, onCaptionChange }: P
                     </div>
                 )}
             </div>
-
-            <label className="survey-label">Caption — Give Your Photo a Voice</label>
-            <textarea
-                className="survey-textarea"
-                value={caption}
-                onChange={(e) => onCaptionChange(e.target.value)}
-                placeholder="Describe what this photo means to you, how you're feeling, or what you see in your future..."
-                rows={4}
-                maxLength={500}
-            />
+            <div>
+                <label className="survey-label">Caption — Give Your Photo a Voice</label>
+                <textarea
+                    className="survey-textarea"
+                    value={caption}
+                    onChange={(e) => onCaptionChange(e.target.value)}
+                    placeholder="Describe what this photo means to you, how you're feeling, or what you see in your future..."
+                    rows={4}
+                    maxLength={500}
+                />
+            </div>
             <div className="survey-char-count">{caption.length}/500 characters</div>
         </article>
     )
