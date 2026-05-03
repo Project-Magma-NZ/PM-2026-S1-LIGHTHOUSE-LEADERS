@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import TextQuestion from '../components/TextQuestion'
-import RatingQuestion from '../components/RatingQuestion'
-import PhotoVoice from '../components/PhotoVoice'
+import TextQuestion from '../components/survey/TextQuestion'
+import RatingQuestion from '../components/survey/RatingQuestion'
+import PhotoVoice from '../components/survey/PhotoVoice'
 
 const capabilities = [
     { id: 'vision', label: 'Vision', title: 'My ability to see possibilities and imagine a positive future', type: 'rating' },
