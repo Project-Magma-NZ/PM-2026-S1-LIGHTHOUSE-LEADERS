@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { signup } from "../../services/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthProvider";
 
-type Props = {
-  onSuccess?: () => void;
-};
+export default function Signup() {
+  const navigate = useNavigate();
+  const { signup, logout } = useAuth();
 
-export default function Signup({ onSuccess }: Props) {
   const [username, setUsername] = useState("");
   const [schoolId, setSchoolId] = useState<number>(1);
   const [password, setPassword] = useState("");
@@ -19,7 +19,8 @@ export default function Signup({ onSuccess }: Props) {
 
     try {
       await signup({ username, password, school_id: schoolId });
-      onSuccess?.();
+      await logout(); // Logout immediately since backend sets cookie on signup; remove once backend is changed to not set cookie
+      navigate("/login");
     } catch (err: any) {
       setError(err?.response?.data?.detail ?? "Signup failed");
     } finally {
@@ -76,6 +77,9 @@ export default function Signup({ onSuccess }: Props) {
           {submitting ? "Creating..." : "Create account"}
         </button>
       </form>
+      <p style={{ marginTop: 12 }}>
+        Already have an account? <Link to="/login">Log in</Link>
+      </p>
     </main>
   );
 }

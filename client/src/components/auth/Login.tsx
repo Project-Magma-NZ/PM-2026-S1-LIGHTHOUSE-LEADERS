@@ -2,11 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 
-type Props = {
-  onSuccess?: () => void;
-};
-
-export default function Login({ onSuccess }: Props) {
+export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
