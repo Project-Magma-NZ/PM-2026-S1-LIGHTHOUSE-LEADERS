@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from db import SessionLocal
 from models import User
+from auth import router as auth_router
 
 app = FastAPI(title="Survey API")
 
@@ -15,6 +16,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth_router)
 
 def get_db():
     db = SessionLocal()
