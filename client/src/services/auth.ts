@@ -5,6 +5,8 @@ export type Role = "student" | "management" | "adult" | "educator" | "parent";
 export type Me = {
   id: number;
   username: string;
+  first_name: string | null;
+  last_name: string | null;
   role: Role;
   school_id: number | null;
 };
@@ -12,6 +14,8 @@ export type Me = {
 export type SignupRequest = {
   username: string;
   password: string;
+  first_name: string;
+  last_name: string;
   school_id: number;
 };
 

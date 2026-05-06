@@ -46,6 +46,8 @@ def signup(body: SignupRequest, response: Response, db: Session = Depends(get_db
     user = User(
         username=body.username,
         password_hash=hash_password(body.password),
+        first_name=body.first_name,
+        last_name=body.last_name,
         role="student",
         school_id=body.school_id,
     )
@@ -98,6 +100,8 @@ def me(current_user: User = Depends(get_current_user)):
     return MeResponse(
         id=current_user.id,
         username=current_user.username,
+        first_name=current_user.first_name,
+        last_name=current_user.last_name,
         role=current_user.role,
         school_id=current_user.school_id,
     )

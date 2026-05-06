@@ -51,7 +51,7 @@ const Navbar = () => {
                 {isAuthenticated ? (
                     <div className="profile-trigger" ref={profileRef}>
                         <img className="profile-image" src={assets.profile} alt="Profile" />
-                        <span className="profile-name">{user?.username}</span>
+                        <span className="profile-name">{user?.first_name + ' ' + user?.last_name}</span>
                         <button
                             type="button"
                             className={`dropdown-toggle${menuOpen ? ' is-open' : ''}`}

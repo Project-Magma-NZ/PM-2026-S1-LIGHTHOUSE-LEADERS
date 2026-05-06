@@ -6,6 +6,8 @@ export default function Signup() {
   const navigate = useNavigate();
   const { signup, logout } = useAuth();
 
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [schoolId, setSchoolId] = useState<number>(1);
   const [password, setPassword] = useState("");
@@ -18,7 +20,7 @@ export default function Signup() {
     setError(null);
 
     try {
-      await signup({ username, password, school_id: schoolId });
+      await signup({ username, password, first_name, last_name, school_id: schoolId });
       await logout(); // Logout immediately since backend sets cookie on signup; remove once backend is changed to not set cookie
       navigate("/login");
     } catch (err: any) {
@@ -31,8 +33,29 @@ export default function Signup() {
   return (
     <main style={{ maxWidth: 420, margin: "40px auto", padding: 16 }}>
       <h1>Sign up</h1>
-
       <form onSubmit={handleSubmit}>
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ display: "block", marginBottom: 6 }}>First name</label>
+          <input
+            value={first_name}
+            onChange={(e) => setFirstName(e.target.value)}
+            autoComplete="given-name"
+            required
+            style={{ width: "100%", padding: 10 }}
+          />
+        </div>
+
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ display: "block", marginBottom: 6 }}>Last name</label>
+          <input
+            value={last_name}
+            onChange={(e) => setLastName(e.target.value)}
+            autoComplete="family-name"
+            required
+            style={{ width: "100%", padding: 10 }}
+          />
+        </div>
+
         <div style={{ marginBottom: 12 }}>
           <label style={{ display: "block", marginBottom: 6 }}>Username</label>
           <input

@@ -6,6 +6,9 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, nullable=False, index=True)
 
+    first_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)
+
     email = Column(String, unique=True, nullable=True, index=True)
     password_hash = Column(String, nullable=False)
     role = Column(String, nullable=False)
