@@ -9,20 +9,21 @@ import Completed from './pages/Completed'
 import './index.css'
 import Signup from './components/auth/Signup'
 import Login from './components/auth/Login'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 
 function App() {
   return (
     <div className="appShell">
       <Navbar />
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/survey" element={<Survey />} />
+        <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/survey" element={<ProtectedRoute><Survey /></ProtectedRoute>} />
         <Route path='/login' element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/analytics' element={<Analytics />} />
-        <Route path='/completed' element={<Completed />} />
+        <Route path='/profile' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path='/analytics' element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+        <Route path='/completed' element={<ProtectedRoute><Completed /></ProtectedRoute>} />
       </Routes>
     </div>
   )
