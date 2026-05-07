@@ -1,8 +1,12 @@
 import { useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
+import { useSurveys } from '../hooks/useSurveys';
 
 const Dashboard = () => {
     const navigate = useNavigate()
+    const { surveys, loading, error } = useSurveys();
+
+  const activeSurveys = surveys.filter((s) => s.status === "active");
     return (
         <div className="dashboard-wrapper">
             <div className="dashboard-page">
@@ -14,11 +18,21 @@ const Dashboard = () => {
                     </p>
                 </div>
                 <div className="dashboard-content">
-                    <div onClick={() => navigate('/survey')} className="dashboard-card">
-                        <img src={assets.surveyIcon} alt="Survey Icon" />
-                        <h1>New Survey</h1>
-                        <p>You have a new survey to complete</p>
-                    </div>
+                    {loading && <div className="dashboard-card">Loading surveys...</div>}
+                    {error && <div className="dashboard-card">{error}</div>}
+
+                    {!loading &&
+                        !error &&
+                        activeSurveys.map((survey) => (
+                        <div
+                            key={survey.id}
+                            className="dashboard-card"
+                            onClick={() => navigate(`/survey/${survey.id}`)}
+                        >
+                            <img src={assets.surveyIcon} alt="Survey Icon" />
+                            <h1>{survey.title}</h1>
+                        </div>
+                        ))}
                     <div onClick={() => navigate('/completed')} className="dashboard-card">
                         <img src={assets.completedIcon} alt="Completed Survey Icon" />
                         <h1>Completed Surveys</h1>
