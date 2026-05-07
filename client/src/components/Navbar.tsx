@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { assets } from '../assets/assets'
+import { useAuth } from '../context/AuthProvider'
 
 const Navbar = () => {
     const navigate = useNavigate()
-    const [token, setToken] = useState(true)
+    const { user, isAuthenticated, logout } = useAuth() 
+
     const [menuOpen, setMenuOpen] = useState(false)
     const profileRef = useRef<HTMLDivElement | null>(null)
 
@@ -46,10 +48,10 @@ const Navbar = () => {
                 </li>
             </ul>
             <div className="profile">
-                {token ? (
+                {isAuthenticated ? (
                     <div className="profile-trigger" ref={profileRef}>
                         <img className="profile-image" src={assets.profile} alt="Profile" />
-                        <span className="profile-name">Sarah Johnson</span>
+                        <span className="profile-name">{user?.first_name + ' ' + user?.last_name}</span>
                         <button
                             type="button"
                             className={`dropdown-toggle${menuOpen ? ' is-open' : ''}`}
@@ -71,8 +73,8 @@ const Navbar = () => {
                                     <span>Profile</span>
                                 </p>
                                 <p
-                                    onClick={() => {
-                                        setToken(false)
+                                    onClick={async () => {
+                                        await logout();
                                         setMenuOpen(false)
                                         navigate('/login')
                                     }}
