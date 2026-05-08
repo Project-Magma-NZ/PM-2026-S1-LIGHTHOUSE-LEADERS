@@ -14,7 +14,7 @@ from survey_schemas import (
     ResponseAnswerOut,
 )
 
-router = APIRouter(prefix="/api/surveys", tags=["surveys"])
+router = APIRouter(prefix="/api/survey", tags=["survey"])
 
 
 def get_db():
