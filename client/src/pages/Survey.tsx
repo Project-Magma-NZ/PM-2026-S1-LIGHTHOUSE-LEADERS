@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import TextQuestion from '../components/TextQuestion'
 import RatingQuestion from '../components/RatingQuestion'
 import SurveyNav from '../components/SurveyNav'
 import { useParams } from 'react-router-dom'

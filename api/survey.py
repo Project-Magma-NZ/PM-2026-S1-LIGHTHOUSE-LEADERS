@@ -77,7 +77,7 @@ def get_survey(survey_id: int, db: Session = Depends(get_db)):
 def submit_survey_response(
     survey_id: int,
     body: SubmitSurveyResponseIn,
-    current_user=Depends(get_current_user),
+    current_user=Depends(get_current_user), #user must be signded in
     db: Session = Depends(get_db),
 ):
     survey = db.query(Survey).filter(Survey.id == survey_id).first()

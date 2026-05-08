@@ -27,14 +27,44 @@ export type SurveyDetail = {
   questions: SurveyQuestion[];
 };
 
+export type SubmitSurveyResponseIn = {
+  answers: { question_id: number; answer: string }[];
+};
+
+export type SubmitSurveyResponseOut = {
+  response_id: number;
+  survey_id: number;
+  submitted_at: string;
+};
+
+export type SurveyResponseOut = {
+  id: number;
+  survey_id: number;
+  user_id: number;
+  submitted_at: string;
+  answers: { question_id: number; answer: string }[];
+};
 
 
 export async function listSurveys(): Promise<SurveyListItem[]> {
-  const res = await api.get<SurveyListItem[]>("/surveys");
+  const res = await api.get<SurveyListItem[]>("/survey");
   return res.data;
 }
 
 export async function getSurvey(surveyId: number): Promise<SurveyDetail> {
   const res = await api.get<SurveyDetail>(`/survey/${surveyId}`);
+  return res.data;
+}
+
+export async function submitSurveyResponse(
+  surveyId: number,
+  body: SubmitSurveyResponseIn
+): Promise<SubmitSurveyResponseOut> {
+  const res = await api.post(`/survey/${surveyId}/responses`, body);
+  return res.data;
+}
+
+export async function getMySurveyResponse(surveyId: number): Promise<SurveyResponseOut> {
+  const res = await api.get(`/survey/${surveyId}/my-response`);
   return res.data;
 }
