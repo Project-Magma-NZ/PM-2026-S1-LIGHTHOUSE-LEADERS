@@ -3,7 +3,7 @@ const ratingScale = [1, 2, 3, 4, 5]
 type RatingQuestionProps = {
     id: string
     title: string
-    rating: number | undefined
+    rating: number
     onRate: (value: number) => void
 }
 

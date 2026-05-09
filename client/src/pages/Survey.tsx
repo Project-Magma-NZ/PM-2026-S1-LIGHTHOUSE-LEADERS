@@ -3,6 +3,8 @@ import RatingQuestion from '../components/RatingQuestion'
 import SurveyNav from '../components/SurveyNav'
 import { useParams } from 'react-router-dom'
 import { useSurvey } from '../hooks/useSurvey'
+import { useNavigate } from 'react-router-dom'
+import { submitSurveyResponse } from '../services/surveys'
 
 // In future iterations, we can fetch this from the backend and use it to dynamically generate the survey form
 const testQuestions = [
@@ -62,7 +64,9 @@ type UIQuestion = {
 
 const Survey = () => {
     const [activeQuestion, setActiveQuestion] = useState('q1')
-    const [ratings, setRatings] = useState<Record<string, number>>({})
+    const [ratingsByQuestionId, setRatingsByQuestionId] = useState<Record<number, number>>({})
+    const [submitting, setSubmitting] = useState(false)
+    const navigate = useNavigate()
 
     const { surveyId } = useParams();
 
@@ -103,6 +107,46 @@ const Survey = () => {
         }
     };
 
+    async function handleSubmit() {
+        if (!numericSurveyId) {
+            alert('Invalid survey id')
+            return
+        }
+
+        // Build payload expected by backend
+        const answers = questions.map((q) => {
+            const value = ratingsByQuestionId[q.dbId]
+            return {
+                question_id: q.dbId,
+                answer: value == null ? '' : String(value),
+            }
+        })
+
+        // Simple validation: require every question answered
+        const missing = answers.filter((a) => !a.answer)
+        if (missing.length > 0) {
+            alert('Please answer all questions before submitting.')
+            return
+        }
+
+        try {
+            setSubmitting(true)
+            await submitSurveyResponse(numericSurveyId, { answers })
+            // send them somewhere useful
+            navigate('/completed')
+        } catch (err: any) {
+            alert(err?.response?.data?.detail ?? 'Failed to submit survey')
+        } finally {
+            setSubmitting(false)
+        }
+    }
+
+    function handleClear() {
+        setRatingsByQuestionId({})
+        setActiveQuestion('q1')
+        scrollToQuestion('q1')
+    }
+
     if (loading) return <main className="survey-page">Loading survey…</main>;
     if (error) return <main className="survey-page">Error: {error}</main>;
     if (!survey) return <main className="survey-page">Survey not found.</main>;
@@ -123,19 +167,30 @@ const Survey = () => {
                         key={question.id}
                         id={question.id}
                         title={question.title}
-                        rating={ratings[question.id]}
+                        rating={ratingsByQuestionId[question.dbId]}
                         onRate={(value) =>
-                            setRatings((current) => ({ ...current, [question.id]: value }))
+                            setRatingsByQuestionId((current) => ({ ...current, [question.dbId]: value }))
                         }
                         />
                     )
                 )}
 
                 <div className="survey-submit-row">
-                    <button type="button" className="survey-submit-button">
-                        Submit Survey
+                    <button
+                        type="button"
+                        className="survey-submit-button"
+                        onClick={handleSubmit}
+                        disabled={submitting}
+                    >
+                        {submitting ? 'Submitting...' : 'Submit Survey'}
                     </button>
-                    <button type="button" className="survey-clear-button">
+
+                    <button
+                        type="button"
+                        className="survey-clear-button"
+                        onClick={handleClear}
+                        disabled={submitting}
+                    >
                         Clear Survey
                     </button>
                 </div>
