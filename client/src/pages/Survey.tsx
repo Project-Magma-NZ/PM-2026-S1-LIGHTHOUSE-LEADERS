@@ -78,7 +78,7 @@ const Survey = () => {
     console.log("surveyId param:", surveyId, "numericSurveyId:", numericSurveyId);
 
     const { survey, loading, error } = useSurvey(numericSurveyId);
-
+    
     const questions: UIQuestion[] = useMemo(() => {
     if (!survey) return [];
 

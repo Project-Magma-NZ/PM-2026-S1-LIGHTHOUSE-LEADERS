@@ -54,3 +54,9 @@ class SurveyResponseOut(BaseModel):
     user_id: int
     submitted_at: datetime
     answers: list[ResponseAnswerOut]
+    
+
+class SurveyListItemWithStatus(SurveyListItem):
+    has_submitted: bool
+    response_id: int | None = None
+    submitted_at: datetime | None = None

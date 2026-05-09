@@ -6,6 +6,7 @@ from models import Survey, SurveyQuestion, SurveyResponse, ResponseAnswer
 from auth import get_current_user
 from survey_schemas import (
     SurveyListItem,
+    SurveyListItemWithStatus,
     SurveyDetailOut,
     SurveyQuestionOut,
     SubmitSurveyResponseIn,
@@ -39,7 +40,37 @@ def list_surveys(db: Session = Depends(get_db)):
         for s in surveys
     ]
 
+@router.get("/available", response_model=list[SurveyListItemWithStatus])
+def list_surveys_available(
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    surveys = db.query(Survey).order_by(Survey.id.desc()).all()
 
+    # Load all of this user's responses once (avoid N+1)
+    my_responses = (
+        db.query(SurveyResponse)
+        .filter(SurveyResponse.user_id == current_user.id)
+        .all()
+    )
+    response_by_survey_id = {r.survey_id: r for r in my_responses}
+
+    out: list[SurveyListItemWithStatus] = []
+    for s in surveys:
+        r = response_by_survey_id.get(s.id)
+        out.append(
+            SurveyListItemWithStatus(
+                id=s.id,
+                title=s.title,
+                audience=s.audience,
+                version=s.version,
+                status=s.status,
+                has_submitted=r is not None,
+                response_id=r.id if r else None,
+                submitted_at=r.submitted_at if r else None,
+            )
+        )
+    return out
 @router.get("/{survey_id}", response_model=SurveyDetailOut)
 def get_survey(survey_id: int, db: Session = Depends(get_db)):
     survey = db.query(Survey).filter(Survey.id == survey_id).first()

@@ -5,8 +5,9 @@ import { useSurveys } from '../hooks/useSurveys';
 const Dashboard = () => {
     const navigate = useNavigate()
     const { surveys, loading, error } = useSurveys();
-
-  const activeSurveys = surveys.filter((s) => s.status === "active");
+    const todo = surveys.filter(s => s.status === "active" && !s.has_submitted);
+    const completed = surveys.filter(s => s.has_submitted);
+    const activeSurveys = surveys.filter((s) => s.status === "active");
     return (
         <div className="dashboard-wrapper">
             <div className="dashboard-page">
@@ -21,28 +22,45 @@ const Dashboard = () => {
                     {loading && <div className="dashboard-card">Loading surveys...</div>}
                     {error && <div className="dashboard-card">{error}</div>}
 
-                    {!loading &&
-                        !error &&
-                        activeSurveys.map((survey) => (
-                        <div
-                            key={survey.id}
-                            className="dashboard-card"
-                            onClick={() => navigate(`/survey/${survey.id}`)}
-                        >
-                            <img src={assets.surveyIcon} alt="Survey Icon" />
-                            <h1>{survey.title}</h1>
-                        </div>
-                        ))}
-                    <div onClick={() => navigate('/completed')} className="dashboard-card">
-                        <img src={assets.completedIcon} alt="Completed Survey Icon" />
-                        <h1>Completed Surveys</h1>
-                        <p>View your last submitted survey.</p>
-                    </div>
-                    <div onClick={() => navigate('/analytics')} className="dashboard-card">
-                        <img src={assets.dataIcon} alt="Analytics Icon" />
-                        <h1>Analytics</h1>
-                        <p>View data breakdown of your survey responses</p>
-                    </div>
+                    <>
+                            <div
+                                onClick={() => {
+                                    if (todo.length > 0) navigate(`/survey/${todo[0].id}`)
+                                }}
+                                className="dashboard-card"
+                                style={{ cursor: todo.length > 0 ? 'pointer' : 'default' }}
+                            >
+                                <img src={assets.surveyIcon} alt="Survey Icon" />
+                                <h1>To do</h1>
+                                {todo.length === 0 && (
+                                    <p style={{ opacity: 0.8 }}>
+                                        You have no active surveys waiting for you right now.
+                                    </p>
+                                )}
+                            </div>
+
+                            <div
+                                onClick={() => {
+                                    if (completed.length > 0) navigate(`/survey/complete`)
+                                }}
+                                className="dashboard-card"
+                                style={{ cursor: completed.length > 0 ? 'pointer' : 'default' }}
+                            >
+                                <img src={assets.completedIcon} alt="Completed Survey Icon" />
+                                <h1>Completed</h1>
+                                {completed.length === 0 && (
+                                    <p style={{ opacity: 0.8 }}>
+                                        Once you submit a survey, it will appear here.
+                                    </p>
+                                )}
+                            </div>
+
+                            <div onClick={() => navigate('/analytics')} className="dashboard-card">
+                                <img src={assets.dataIcon} alt="Analytics Icon" />
+                                <h1>Analytics</h1>
+                                <p>View data breakdown of your survey responses</p>
+                            </div>
+                        </>
                 </div>
             </div>
         </div>

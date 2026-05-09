@@ -45,6 +45,16 @@ export type SurveyResponseOut = {
   answers: { question_id: number; answer: string }[];
 };
 
+export type SurveyListItemWithStatus = SurveyListItem & {
+  has_submitted: boolean;
+  response_id: number | null;
+  submitted_at: string | null;
+};
+
+export async function listAvailableSurveys(): Promise<SurveyListItemWithStatus[]> {
+  const res = await api.get<SurveyListItemWithStatus[]>("/survey/available");
+  return res.data;
+}
 
 export async function listSurveys(): Promise<SurveyListItem[]> {
   const res = await api.get<SurveyListItem[]>("/survey");
