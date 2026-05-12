@@ -1,3 +1,32 @@
+const generateMockPhoto = (seed: number) => {
+    const palette = [
+        ['#7f49b2', '#f4c542'],
+        ['#2a9d8f', '#264653'],
+        ['#e76f51', '#f4a261'],
+        ['#457b9d', '#a8dadc'],
+    ][seed % 4]
+
+    const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Mock PhotoVoice image">
+            <defs>
+                <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="${palette[0]}" />
+                    <stop offset="100%" stop-color="${palette[1]}" />
+                </linearGradient>
+            </defs>
+            <rect width="800" height="600" fill="url(#bg)" rx="36" />
+            <circle cx="180" cy="170" r="110" fill="#ffffff" fill-opacity="0.14" />
+            <circle cx="620" cy="420" r="150" fill="#ffffff" fill-opacity="0.12" />
+            <path d="M110 470 C220 360, 340 520, 460 410 S680 330, 720 250" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="18" stroke-linecap="round" />
+            <rect x="70" y="70" width="660" height="460" rx="28" fill="#ffffff" fill-opacity="0.08" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2" />
+            <text x="400" y="275" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="54" font-weight="700">PhotoVoice</text>
+            <text x="400" y="335" text-anchor="middle" fill="#ffffff" fill-opacity="0.9" font-family="Arial, sans-serif" font-size="24">Mock leadership reflection image</text>
+        </svg>
+    `
+
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg.trim())}`
+}
+
 export function generateMockSurveys(count: number) {
     const reflections = [
         {
@@ -26,8 +55,10 @@ export function generateMockSurveys(count: number) {
                 ])
             ),
             textResponses: reflections[i % reflections.length],
-            photo: null,
-            caption: null,
+            photo: generateMockPhoto(i),
+            caption: i % 2 === 0
+                ? 'Building momentum by working together and taking action.'
+                : 'A snapshot of growth, confidence, and support.',
         }
     })
 }

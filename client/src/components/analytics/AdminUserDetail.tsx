@@ -43,7 +43,7 @@ const AdminUserDetail = ({ user, surveys, onBack }: Props) => {
                         <p className="analytics-empty-desc">This student hasn't completed any assessments yet.</p>
                     </div>
                 ) : (
-                    <AnalyticsView surveys={surveys} isAdmin={true} />
+                    <AnalyticsView surveys={surveys} isAdmin={false} />
                 )}
             </div>
         </div>
