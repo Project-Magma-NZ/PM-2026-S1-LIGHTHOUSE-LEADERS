@@ -24,6 +24,11 @@ const Analytics = () => {
     const [selectedUser, setSelectedUser] = useState<UserData | null>(null)
     const [selectedUserSurveys, setSelectedUserSurveys] = useState<any[]>([])
 
+    const loadStudentSurveys = () => {
+        const storedSurveys = JSON.parse(localStorage.getItem('studentSurveys') || '[]')
+        setSurveys(storedSurveys)
+    }
+
     useEffect(() => {
         if (isAdmin) {
             const allUsers = JSON.parse(localStorage.getItem('allUsers') || '[]')
@@ -35,8 +40,23 @@ const Analytics = () => {
                 setUsers(allUsers)
             }
         } else {
-            const storedSurveys = JSON.parse(localStorage.getItem('studentSurveys') || '[]')
-            setSurveys(storedSurveys)
+            loadStudentSurveys()
+
+            const handleStorage = (event: StorageEvent) => {
+                if (event.key === 'studentSurveys' || event.key === null) {
+                    loadStudentSurveys()
+                }
+            }
+
+            const handleFocus = () => loadStudentSurveys()
+
+            window.addEventListener('storage', handleStorage)
+            window.addEventListener('focus', handleFocus)
+
+            return () => {
+                window.removeEventListener('storage', handleStorage)
+                window.removeEventListener('focus', handleFocus)
+            }
         }
     }, [isAdmin])
 
@@ -98,6 +118,11 @@ const Analytics = () => {
             <div className="analytics-inner">
                 <h1 className="analytics-heading">Analytics Dashboard</h1>
                 <AnalyticsView surveys={surveys} isAdmin={false} />
+                <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
+                    <button onClick={() => navigate('/survey')} className="analytics-empty-btn">
+                        Take Another Survey
+                    </button>
+                </div>
             </div>
         </div>
     )
