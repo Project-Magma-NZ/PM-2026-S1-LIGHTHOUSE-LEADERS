@@ -9,7 +9,7 @@ import Completed from './pages/Completed'
 import CreateSurvey from './pages/CreateSurvey'
 import './index.css'
 import Signup from './components/auth/Signup'
-import Login from './components/auth/Login'
+import Login from './pages/Login'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 
 function App() {

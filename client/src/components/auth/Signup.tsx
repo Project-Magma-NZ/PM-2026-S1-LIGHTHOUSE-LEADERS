@@ -9,7 +9,7 @@ export default function Signup() {
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [username, setUsername] = useState("");
-  const [schoolId, setSchoolId] = useState<number>(1);
+  const [schoolId, setSchoolId] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,7 +71,7 @@ export default function Signup() {
           <label style={{ display: "block", marginBottom: 6 }}>School</label>
           <select
             value={schoolId}
-            onChange={(e) => setSchoolId(Number(e.target.value))}
+            onChange={(e) => setSchoolId((e.target.value))}
             style={{ width: "100%", padding: 10 }}
           >
             {/* Replace with data fetched from backend later */}

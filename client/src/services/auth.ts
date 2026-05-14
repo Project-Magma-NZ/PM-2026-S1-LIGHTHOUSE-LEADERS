@@ -16,7 +16,7 @@ export type SignupRequest = {
   password: string;
   first_name: string;
   last_name: string;
-  school_id: number;
+  school_id: string;
 };
 
 export type LoginRequest = {
