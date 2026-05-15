@@ -8,6 +8,11 @@ type Props = {
     showPrevious: boolean
 }
 
+const toScore = (value: unknown) => {
+    const n = typeof value === "number" ? value : Number(String(value ?? "").trim())
+    return Number.isFinite(n) ? n : 0
+}
+
 const AnalyticsTable = ({ capabilities, latestSurvey, previousSurvey, showLatest, showPrevious }: Props) => {
     return (
         <div className="analytics-card">
@@ -24,8 +29,9 @@ const AnalyticsTable = ({ capabilities, latestSurvey, previousSurvey, showLatest
                     </thead>
                     <tbody>
                         {capabilities.map((cap) => {
-                            const latestValue = latestSurvey.ratings[cap.id]
-                            const previousValue = previousSurvey?.ratings[cap.id]
+                            const latestValue = toScore(latestSurvey?.ratings?.[cap.id])
+                            const previousValue = toScore(previousSurvey?.ratings?.[cap.id])
+
                             const change = showLatest && showPrevious && previousValue
                                 ? (latestValue - previousValue).toFixed(1) : null
                             return (

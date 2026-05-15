@@ -87,7 +87,7 @@ const Analytics = () => {
 
                         if (qt.startsWith('scale') || qt.includes('rating')) {
                             // analytics expects rating keys like vision/strategy/etc
-                            if (q.category) ratings[q.category] = raw
+                            if (q.category) ratings[String(q.category).toLowerCase()] = raw
                         } else {
                             // store text by question text or category
                             const key = q.question_text || q.category || `q_${q.id}`
@@ -198,7 +198,7 @@ const Analytics = () => {
                 <h1 className="analytics-heading">Analytics Dashboard</h1>
                 <AnalyticsView surveys={surveys} isAdmin={false} />
                 <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
-                    <button onClick={() => navigate('/survey')} className="analytics-empty-btn">
+                    <button onClick={() => navigate('/dashboard')} className="analytics-empty-btn">
                         Take Another Survey
                     </button>
                 </div>

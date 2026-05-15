@@ -18,6 +18,11 @@ type Props = {
     isAdmin: boolean
 }
 
+const toScore = (value: unknown) => {
+    const n = typeof value === 'number' ? value : Number(String(value ?? '').trim())
+    return Number.isFinite(n) ? n : 0
+}
+
 const AnalyticsView = ({ surveys, isAdmin }: Props) => {
     const [showLatest, setShowLatest] = useState(true)
     const [showPrevious, setShowPrevious] = useState(false)
@@ -27,8 +32,8 @@ const AnalyticsView = ({ surveys, isAdmin }: Props) => {
 
     const chartData = capabilities.map(cap => ({
         category: cap.name,
-        latest: latestSurvey?.ratings[cap.id] || 0,
-        previous: previousSurvey?.ratings[cap.id] || 0,
+        latest: toScore(latestSurvey?.ratings?.[cap.id]),
+        previous: toScore(previousSurvey?.ratings?.[cap.id]),
     }))
 
     const getDateLabel = (dateString: string) =>
