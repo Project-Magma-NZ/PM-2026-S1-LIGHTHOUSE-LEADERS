@@ -66,7 +66,7 @@ def signup(body: SignupRequest, response: Response, db: Session = Depends(get_db
         path="/",
     )
 
-    return MeResponse(id=user.id, username=user.username, role=user.role, school_id=user.school_id)
+    return MeResponse(id=user.id, username=user.username, first_name=user.first_name, last_name=user.last_name, role=user.role, school_id=user.school_id)
 
 
 @router.post("/login", response_model=MeResponse)
