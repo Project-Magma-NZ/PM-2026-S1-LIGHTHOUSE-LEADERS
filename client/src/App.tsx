@@ -20,8 +20,8 @@ function App() {
     <div className="appShell">
       {!hideNavbar && <Navbar />}
       <Routes>
-        <Route path="/" element={<ProtectedRoute><Navigate to="/login" replace /></ProtectedRoute>} />
-        <Route path="/survey" element={<ProtectedRoute><Survey /></ProtectedRoute>} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        {/* <Route path="/survey" element={<ProtectedRoute><Survey /></ProtectedRoute>} /> */}
         <Route path="/survey/:surveyId" element={<ProtectedRoute><Survey /></ProtectedRoute>} />
         <Route path="/create-survey" element={<ProtectedRoute><CreateSurvey /></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

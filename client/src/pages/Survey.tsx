@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import TextQuestion from '../components/survey/TextQuestion'
 import RatingQuestion from '../components/survey/RatingQuestion'
@@ -23,48 +23,155 @@ const reflectionQuestions = [
     { id: 'support', label: 'Support', title: 'Who or what helps you when things get tough?', type: 'text', placeholder: 'Think about people, activities, or resources that support you...' },
 ] as const
 
-type UIQuestion = {
-    id: string
-    dbId: number
-    label: string
-    title: string;
-    type: 'rating';
-};
+// type UIQuestion = {
+//     id: string
+//     dbId: number
+//     label: string
+//     title: string;
+//     type: 'rating';
+// };
 
-const allQuestions = [...capabilities, ...reflectionQuestions]
+type UIQuestion =
+    | {
+          uiId: string
+          dbId: number
+          title: string
+          type: 'rating'
+          badge?: string
+      }
+    | {
+          uiId: string
+          dbId: number
+          title: string
+          type: 'text'
+          placeholder?: string
+      }
 
+const badgeForCategory = (category?: string | null) => {
+    const mapping: Record<string, string> = {
+        vision: 'Vision',
+        strategy: 'Strategy',
+        resources: 'Resources',
+        risk: 'Risk',
+        action: 'Action',
+        connection: 'Connection',
+        purpose: 'Purpose',
+    }
+    if (!category) return undefined
+    return mapping[category] ?? category
+}
+
+const placeholderForTextCategory = (category?: string | null) => {
+    if (!category) return undefined
+    if (category === 'reflection')
+        return 'Think about recent achievements, personal qualities, or moments where you showed strength...'
+    return undefined
+}
+
+
+//const allQuestions = [...capabilities, ...reflectionQuestions]
 const Survey = () => {
     const navigate = useNavigate()
+    const { surveyId } = useParams()
+
+    const numericSurveyId = useMemo(() => {
+        const n = Number(surveyId)
+        return Number.isFinite(n) ? n : undefined
+    }, [surveyId])
+
+    const { survey, loading, error } = useSurvey(numericSurveyId)
+
+    // Stepper state
     const [currentStep, setCurrentStep] = useState(0)
-    const [ratings, setRatings] = useState<Record<string, number>>({})
-    const [textResponses, setTextResponses] = useState<Record<string, string>>({})
+
+    // Store answers by DB question id (required by backend)
+    const [ratingsByQuestionId, setRatingsByQuestionId] = useState<Record<number, number>>({})
+    const [textByQuestionId, setTextByQuestionId] = useState<Record<number, string>>({})
+
+    // PhotoVoice remains local-only for now (backend doesn't have a file upload endpoint yet)
     const [photoPreview, setPhotoPreview] = useState('')
     const [caption, setCaption] = useState('')
 
-    const totalSteps = allQuestions.length + 1
-    const isPhotoStep = currentStep === allQuestions.length
+    const [submitting, setSubmitting] = useState(false)
+
+    const questions: UIQuestion[] = useMemo(() => {
+        if (!survey) return []
+
+        return [...survey.questions]
+            .sort((a, b) => a.sort_order - b.sort_order)
+            .map((q, idx) => {
+                const uiId = `q${idx + 1}`
+
+                const qt = String(q.question_type ?? '').toLowerCase()
+                const isText = qt === 'text' || qt === 'textarea'
+                if (isText) {
+                    return {
+                        uiId,
+                        dbId: q.id,
+                        title: q.question_text,
+                        type: 'text',
+                        placeholder: placeholderForTextCategory(q.category),
+                    }
+                }
+
+                // default to rating
+                return {
+                    uiId,
+                    dbId: q.id,
+                    title: q.question_text,
+                    type: 'rating',
+                    badge: badgeForCategory(q.category),
+                }
+            })
+    }, [survey])
+
+    const totalSteps = questions.length + 1
+    const isPhotoStep = currentStep === questions.length
 
     const isStepComplete = () => {
         if (isPhotoStep) return photoPreview.length > 0 && caption.trim().length > 0
-        const current = allQuestions[currentStep]
-        if (current.type === 'rating') return ratings[current.id] !== undefined
-        return (textResponses[current.id] ?? '').trim().length > 0
+        const current = questions[currentStep]
+        if (current.type === 'rating') return ratingsByQuestionId[current.dbId] !== undefined
+        return (textByQuestionId[current.dbId] ?? '').trim().length > 0
     }
 
-    const handleSubmit = () => {
-        const existingSurveys = JSON.parse(localStorage.getItem('studentSurveys') || '[]')
-        const newSurvey = {
-            id: Date.now().toString(),
-            date: new Date().toISOString(),
-            ratings,
-            textResponses,
-            photo: photoPreview,
-            caption,
-            type: existingSurveys.length === 0 ? 'initial' : 'follow-up',
+    const handleSubmit = async () => {
+        if (!numericSurveyId) {
+            alert('Invalid survey id')
+            return
         }
-        localStorage.setItem('studentSurveys', JSON.stringify([...existingSurveys, newSurvey]))
-        navigate('/analytics')
+
+        // Build payload expected by backend: { answers: [{question_id, answer}] }
+        const answers = questions.map((q) => {
+            if (q.type === 'rating') {
+                const v = ratingsByQuestionId[q.dbId]
+                return { question_id: q.dbId, answer: v == null ? '' : String(v) }
+            }
+
+            const t = textByQuestionId[q.dbId]
+            return { question_id: q.dbId, answer: (t ?? '').trim() }
+        })
+
+        const missing = answers.filter((a) => !a.answer)
+        if (missing.length > 0) {
+            alert('Please answer all questions before submitting.')
+            return
+        }
+
+        try {
+            setSubmitting(true)
+            await submitSurveyResponse(numericSurveyId, { answers })
+            navigate('/analytics')
+        } catch (err: any) {
+            alert(err?.response?.data?.detail ?? 'Failed to submit survey')
+        } finally {
+            setSubmitting(false)
+        }
     }
+
+    if (loading) return <main className="survey-page">Loading survey…</main>
+    if (error) return <main className="survey-page">Error: {error}</main>
+    if (!survey) return <main className="survey-page">Survey not found.</main>
 
     const progressPercent = Math.round((currentStep / totalSteps) * 100)
     const progressLabel = isPhotoStep ? 'PhotoVoice - Final Step' : `Question ${currentStep + 1} of ${totalSteps}`
@@ -85,23 +192,25 @@ const Survey = () => {
             {/* Card */}
             <div className="survey-card">
                 {!isPhotoStep ? (
-                    allQuestions[currentStep].type === 'rating' ? (
+                    questions[currentStep].type === 'rating' ? (
                         <RatingQuestion
-                            key={allQuestions[currentStep].id}
-                            id={allQuestions[currentStep].id}
-                            title={allQuestions[currentStep].title}
-                            badge={capabilities.find(c => c.id === allQuestions[currentStep].id)?.label}
-                            rating={ratings[allQuestions[currentStep].id]}
-                            onRate={(value) => setRatings(r => ({ ...r, [allQuestions[currentStep].id]: value }))}
+                            key={questions[currentStep].uiId}
+                            id={questions[currentStep].uiId}
+                            title={questions[currentStep].title}
+                            badge={questions[currentStep].badge}
+                            rating={ratingsByQuestionId[questions[currentStep].dbId]}
+                            onRate={(value) => setRatingsByQuestionId(r => ({ ...r, [questions[currentStep].dbId]: value }))}
                         />
                     ) : (
                         <TextQuestion
-                            key={allQuestions[currentStep].id}
-                            id={allQuestions[currentStep].id}
-                            title={allQuestions[currentStep].title}
-                            placeholder={(allQuestions[currentStep] as typeof reflectionQuestions[number]).placeholder}
-                            value={textResponses[allQuestions[currentStep].id] || ''}
-                            onChange={(val) => setTextResponses(r => ({ ...r, [allQuestions[currentStep].id]: val }))}
+                            key={questions[currentStep].uiId}
+                            id={questions[currentStep].uiId}
+                            title={questions[currentStep].title}
+                            placeholder={''}
+                            value={textByQuestionId[questions[currentStep].dbId] || ''}
+                            onChange={(val) =>
+                                setTextByQuestionId((curr) => ({ ...curr, [questions[currentStep].dbId]: val }))
+                            }
                         />
                     )
                 ) : (
@@ -139,7 +248,7 @@ const Survey = () => {
                             onClick={() => setCurrentStep(s => s + 1)}
                             disabled={!isStepComplete()}
                         >
-                            {currentStep === allQuestions.length - 1 ? 'Continue to PhotoVoice →' : 'Next →'}
+                            {currentStep === questions.length - 1 ? 'Continue to PhotoVoice →' : 'Next →'}
                         </button>
                     )}
                 </div>
