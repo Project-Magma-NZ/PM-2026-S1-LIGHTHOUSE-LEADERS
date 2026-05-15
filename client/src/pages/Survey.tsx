@@ -7,21 +7,21 @@ import { useParams } from 'react-router-dom'
 import { useSurvey } from '../hooks/useSurvey'
 import { submitSurveyResponse } from '../services/surveys'
 
-const capabilities = [
-    { id: 'vision', label: 'Vision', title: 'My ability to see possibilities and imagine a positive future', type: 'rating' },
-    { id: 'strategy', label: 'Strategy', title: 'My ability to plan and think through how to achieve my goals', type: 'rating' },
-    { id: 'resources', label: 'Resources', title: 'My ability to identify and use the tools and support available to me', type: 'rating' },
-    { id: 'risk', label: 'Risk', title: 'My ability to try new things and learn from challenges', type: 'rating' },
-    { id: 'action', label: 'Action', title: 'My ability to take steps forward and get things done', type: 'rating' },
-    { id: 'connection', label: 'Connection', title: 'My ability to build relationships and feel connected to others', type: 'rating' },
-    { id: 'purpose', label: 'Purpose', title: 'My understanding of what matters to me and what I stand for', type: 'rating' },
-] as const
+// const capabilities = [
+//     { id: 'vision', label: 'Vision', title: 'My ability to see possibilities and imagine a positive future', type: 'rating' },
+//     { id: 'strategy', label: 'Strategy', title: 'My ability to plan and think through how to achieve my goals', type: 'rating' },
+//     { id: 'resources', label: 'Resources', title: 'My ability to identify and use the tools and support available to me', type: 'rating' },
+//     { id: 'risk', label: 'Risk', title: 'My ability to try new things and learn from challenges', type: 'rating' },
+//     { id: 'action', label: 'Action', title: 'My ability to take steps forward and get things done', type: 'rating' },
+//     { id: 'connection', label: 'Connection', title: 'My ability to build relationships and feel connected to others', type: 'rating' },
+//     { id: 'purpose', label: 'Purpose', title: 'My understanding of what matters to me and what I stand for', type: 'rating' },
+// ] as const
 
-const reflectionQuestions = [
-    { id: 'strengths', label: 'Strengths', title: 'What are you most proud of about yourself right now?', type: 'text', placeholder: 'Think about recent achievements, personal qualities, or moments where you showed strength...' },
-    { id: 'goals', label: 'Goals', title: 'What is one thing you would like to improve or work on?', type: 'text', placeholder: "Consider areas where you'd like to grow or challenges you'd like to overcome..." },
-    { id: 'support', label: 'Support', title: 'Who or what helps you when things get tough?', type: 'text', placeholder: 'Think about people, activities, or resources that support you...' },
-] as const
+// const reflectionQuestions = [
+//     { id: 'strengths', label: 'Strengths', title: 'What are you most proud of about yourself right now?', type: 'text', placeholder: 'Think about recent achievements, personal qualities, or moments where you showed strength...' },
+//     { id: 'goals', label: 'Goals', title: 'What is one thing you would like to improve or work on?', type: 'text', placeholder: "Consider areas where you'd like to grow or challenges you'd like to overcome..." },
+//     { id: 'support', label: 'Support', title: 'Who or what helps you when things get tough?', type: 'text', placeholder: 'Think about people, activities, or resources that support you...' },
+// ] as const
 
 // type UIQuestion = {
 //     id: string
@@ -92,7 +92,7 @@ const Survey = () => {
     const [photoPreview, setPhotoPreview] = useState('')
     const [caption, setCaption] = useState('')
 
-    const [submitting, setSubmitting] = useState(false)
+    //const [submitting, setSubmitting] = useState(false)
 
     const questions: UIQuestion[] = useMemo(() => {
         if (!survey) return []
@@ -159,13 +159,13 @@ const Survey = () => {
         }
 
         try {
-            setSubmitting(true)
+            //setSubmitting(true)
             await submitSurveyResponse(numericSurveyId, { answers })
             navigate('/analytics')
         } catch (err: any) {
             alert(err?.response?.data?.detail ?? 'Failed to submit survey')
         } finally {
-            setSubmitting(false)
+            //setSubmitting(false)
         }
     }
 

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { CheckCircle, Clock, PlayCircle } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useSurveys } from '../hooks/useSurveys';
 
 const Dashboard = () => {
@@ -14,19 +14,19 @@ const Dashboard = () => {
         () => surveys.filter((s) => s.has_submitted),
         [surveys]
     );
-    const activeSurveys = surveys.filter((s) => s.status === "active");
+    //const activeSurveys = surveys.filter((s) => s.status === "active");
 
     const firstTodo = todo[0];
     const firstCompleted = completed[0];
 
-    const [completedSurveys, setCompletedSurveys] = useState<any[]>([]);
-    const [hasInitialSurvey, setHasInitialSurvey] = useState(false);
+    //const [completedSurveys, setCompletedSurveys] = useState<any[]>([]);
+    //const [hasInitialSurvey, setHasInitialSurvey] = useState(false);
 
     useEffect(() => {
         const loadSurveys = () => {
             //const surveys = JSON.parse(localStorage.getItem("studentSurveys") || "[]");
-            setCompletedSurveys(surveys);
-            setHasInitialSurvey(surveys.length > 0);
+            //setCompletedSurveys(surveys);
+            //setHasInitialSurvey(surveys.length > 0);
         };
 
         loadSurveys();
@@ -48,14 +48,14 @@ const Dashboard = () => {
         };
     }, []);
 
-    const calculateAverageScore = (ratings: Record<string, number>) => {
-        const values = Object.values(ratings);
-        const sum = values.reduce((acc, val) => acc + val, 0);
-        return (sum / values.length).toFixed(1);
-    };
+    // const calculateAverageScore = (ratings: Record<string, number>) => {
+    //     const values = Object.values(ratings);
+    //     const sum = values.reduce((acc, val) => acc + val, 0);
+    //     return (sum / values.length).toFixed(1);
+    // };
 
-    const latestSurvey = completedSurveys[completedSurveys.length - 1];
-    const hasCompletedFollowUp = latestSurvey?.type === "follow-up";
+    //const latestSurvey = completedSurveys[completedSurveys.length - 1];
+    //const hasCompletedFollowUp = latestSurvey?.type === "follow-up";
 
     
     return (
