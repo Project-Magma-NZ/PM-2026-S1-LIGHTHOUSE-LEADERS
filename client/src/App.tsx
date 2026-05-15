@@ -9,7 +9,8 @@ import Completed from './pages/Completed'
 import CreateSurvey from './pages/CreateSurvey'
 import './index.css'
 import Signup from './components/auth/Signup'
-import Login from './components/auth/Login'
+import Login from './pages/Login'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 
 function App() {
   const location = useLocation()
@@ -19,16 +20,17 @@ function App() {
     <div className="appShell">
       {!hideNavbar && <Navbar />}
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/survey" element={<Survey />} />
-        <Route path="/create-survey" element={<CreateSurvey />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        {/* <Route path="/survey" element={<ProtectedRoute><Survey /></ProtectedRoute>} /> */}
+        <Route path="/survey/:surveyId" element={<ProtectedRoute><Survey /></ProtectedRoute>} />
+        <Route path="/create-survey" element={<ProtectedRoute><CreateSurvey /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path='/login' element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/analytics' element={<Analytics />} />
-        <Route path='/completed' element={<Completed />} />
+        <Route path='/profile' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path='/analytics' element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+        <Route path='/completed' element={<ProtectedRoute><Completed /></ProtectedRoute>} />
       </Routes>
     </div>
   )

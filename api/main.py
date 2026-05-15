@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from db import SessionLocal
 from models import User
 from auth import router as auth_router
+from survey import router as survey_router
 
 app = FastAPI(title="Survey API")
 
@@ -18,6 +19,7 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(survey_router)
 
 def get_db():
     db = SessionLocal()
