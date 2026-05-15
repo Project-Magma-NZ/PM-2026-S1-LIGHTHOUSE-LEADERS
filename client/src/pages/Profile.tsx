@@ -1,18 +1,20 @@
-import { useState } from "react";
-import { User, Mail, Phone, Lock, Save, Edit2 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { User, Save, Edit2 } from "lucide-react";
+import { useAuth } from "../context/AuthProvider";
 
 const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
-    const [profile, setProfile] = useState({
-        name: "Sarah Johnson",
-        email: "sarah.johnson@lighthouseleaders.nz",
-        phone: "+64 21 123 4567",
-    });
+    const { user } = useAuth();
 
-    const [passwordData, setPasswordData] = useState({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
+    const realFullName = useMemo(() => {
+        const first = (user as any)?.first_name ?? (user as any)?.firstName ?? "";
+        const last = (user as any)?.last_name ?? (user as any)?.lastName ?? "";
+        const combined = `${first} ${last}`.trim();
+        return combined || (user as any)?.username || "User";
+    }, [user]);
+
+    const [profile, setProfile] = useState({
+        name: realFullName,
     });
 
     const handleSave = () => {
@@ -23,10 +25,10 @@ const Profile = () => {
         setProfile({ ...profile, [field]: value });
     };
 
-    const handlePasswordChange = () => {
-        alert("Password change functionality would be implemented here");
-        setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-    };
+    // const handlePasswordChange = () => {
+    //     alert("Password change functionality would be implemented here");
+    //     setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    // };
 
     return (
         <div className="profile-page">
@@ -76,7 +78,7 @@ const Profile = () => {
                             )}
                         </div>
 
-                        <div className="profile-field">
+                        {/* <div className="profile-field">
                             <label className="profile-label">
                                 <Mail className="profile-label-icon" />
                                 Email Address
@@ -107,13 +109,13 @@ const Profile = () => {
                                     onChange={(e) => handleChange("phone", e.target.value)}
                                     className="profile-input"
                                 />
-                            )}
-                        </div>
+                            )} 
+                        </div>*/}
                     </div>
                 </div>
 
                 {/* Account Management */}
-                <div className="profile-card">
+                {/* <div className="profile-card">
                     <div className="profile-card-header">
                         <h3 className="profile-card-title">
                             <span className="profile-card-accent" />
@@ -168,7 +170,7 @@ const Profile = () => {
                             Update Password
                         </button>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );
