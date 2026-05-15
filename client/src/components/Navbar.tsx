@@ -32,13 +32,13 @@ const Navbar = () => {
             <img onClick={() => navigate('/')} src={assets.logo} alt="Lighthouse Leaders logo" className="logo" />
             <ul>
                 <li>
-                    <NavLink to="/" end>
-                        Dashboard
+                    <NavLink to="/dashboard" end>
+                        Surveys
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/survey">
-                        Survey
+                    <NavLink to="/create-survey">
+                        Create Survey
                     </NavLink>
                 </li>
                 <li>
