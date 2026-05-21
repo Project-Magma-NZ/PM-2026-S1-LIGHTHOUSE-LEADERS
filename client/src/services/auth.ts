@@ -1,6 +1,6 @@
 import api from "../api";
 
-export type Role = "student" | "management" | "adult" | "educator" | "parent";
+export type Role = "student" | "admin" | "adult" | "educator" | "parent";
 
 export type Me = {
   id: number;

@@ -6,6 +6,7 @@ import AdminUserDetail from '../components/analytics/AdminUserDetail'
 import AnalyticsView from '../components/analytics/AnalyticsView'
 import { generateMockUsers, generateMockSurveys } from '../utils/mockData'
 import { getMySurveyResponse, getSurvey } from '../services/surveys'
+import { useAuth } from '../context/AuthProvider'
 
 interface UserData {
     id: string
@@ -19,7 +20,8 @@ interface UserData {
 const Analytics = () => {
     const navigate = useNavigate()
     const location = useLocation()
-    const isAdmin = localStorage.getItem('isAdmin') === 'true'
+    const { user } = useAuth()
+    const isAdmin = user?.role === 'admin'
 
     const qs = useMemo(() => new URLSearchParams(location.search), [location.search])
     const surveyIdParam = qs.get('surveyId')
