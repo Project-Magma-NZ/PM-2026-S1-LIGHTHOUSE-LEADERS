@@ -39,7 +39,7 @@ export default function Login() {
       // Prefer deriving this from `me` or calling /me after login depending on your provider.
       const me = user ?? null;
       if (me?.role) {
-        localStorage.setItem("isAdmin", String(me.role === "management"));
+        localStorage.setItem("isAdmin", String(me.role === 'admin'));
       }
 
       navigate("/dashboard");

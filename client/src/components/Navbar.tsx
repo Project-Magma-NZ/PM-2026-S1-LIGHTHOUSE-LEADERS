@@ -7,6 +7,8 @@ const Navbar = () => {
     const navigate = useNavigate()
     const { user, isAuthenticated, logout } = useAuth() 
 
+    const isAdmin = user?.role === "admin";
+
     const [menuOpen, setMenuOpen] = useState(false)
     const profileRef = useRef<HTMLDivElement | null>(null)
 
@@ -36,11 +38,11 @@ const Navbar = () => {
                         Surveys
                     </NavLink>
                 </li>
-                <li>
-                    <NavLink to="/create-survey">
-                        Create Survey
-                    </NavLink>
-                </li>
+                {isAuthenticated && isAdmin && ( // only admins see this
+                    <li>
+                        <NavLink to="/create-survey">Create Survey</NavLink>
+                    </li>
+                )}
                 <li>
                     <NavLink to="/analytics">
                         Analytics
