@@ -5,6 +5,7 @@ from db import SessionLocal
 from models import User
 from auth import router as auth_router
 from survey import router as survey_router
+from management import router as management_router
 
 app = FastAPI(title="Survey API")
 
@@ -20,6 +21,7 @@ app.add_middleware(
 
 app.include_router(auth_router)
 app.include_router(survey_router)
+app.include_router(management_router)
 
 def get_db():
     db = SessionLocal()
