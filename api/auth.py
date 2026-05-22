@@ -1,3 +1,4 @@
+from typing_extensions import Literal
 from fastapi import APIRouter, Depends, HTTPException, Response, Request, status
 from sqlalchemy.orm import Session
 
@@ -34,6 +35,21 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     return user
+
+def require_role(*allowed_roles: Literal["student", "admin"]):
+    def _dep(current_user: User = Depends(get_current_user)) -> User:
+        if current_user.role not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Forbidden",
+            )
+        return current_user
+    return _dep
+
+
+require_admin = require_role("admin")
+require_student_or_admin = require_role("student", "admin")
+
 
 
 @router.post("/signup", response_model=MeResponse)

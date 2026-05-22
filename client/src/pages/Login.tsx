@@ -3,6 +3,25 @@ import { useNavigate } from "react-router-dom";
 import { assets } from '../assets/assets'
 import { useAuth } from "../context/AuthProvider";
 
+function getErrorMessage(err: any): string {
+  // Axios-style errors
+  const data = err?.response?.data;
+  if (!data) return err?.message ?? "Something went wrong";
+
+  // FastAPI validation errors (422)
+  if (Array.isArray(data?.detail)) {
+    const first = data.detail[0];
+    const field = Array.isArray(first?.loc) ? first.loc[first.loc.length - 1] : "field";
+    const msg = first?.msg ?? "Invalid value";
+    return `${String(field)}: ${String(msg)}`;
+  }
+
+  // Standard FastAPI HTTPException detail
+  if (typeof data?.detail === "string") return data.detail;
+
+  return "Request failed";
+}
+
 export default function Login() {
   const navigate = useNavigate();
   const { login, signup, user } = useAuth();
@@ -17,8 +36,7 @@ export default function Login() {
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
 
-  const [school_id, setSchoolId] = useState("");
-
+  const [school_id, setSchoolId] = useState<string>("1");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,8 +47,14 @@ export default function Login() {
 
     try {
       if (isSignup) {
+        const schoolIdInt = Number(school_id);
+
+        if (!Number.isInteger(schoolIdInt) || schoolIdInt <= 0) {
+          setError("Please select a school.");
+          return;
+        }
         // Only call signup if your AuthProvider exposes it and backend expects it
-        await signup({ username, password, first_name, last_name, school_id});
+        await signup({ username, password, first_name, last_name, school_id });
       } else {
         await login({ username, password });
       }
@@ -39,12 +63,12 @@ export default function Login() {
       // Prefer deriving this from `me` or calling /me after login depending on your provider.
       const me = user ?? null;
       if (me?.role) {
-        localStorage.setItem("isAdmin", String(me.role === "management"));
+        localStorage.setItem("isAdmin", String(me.role === 'admin'));
       }
 
       navigate("/dashboard");
     } catch (err: any) {
-      setError(err?.response?.data?.detail ?? "Login failed");
+      setError(getErrorMessage(err) ?? "Login failed");
     } finally {
       setSubmitting(false);
     }
