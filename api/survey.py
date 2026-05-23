@@ -269,5 +269,4 @@ def add_questions_bulk(
             status_code=status.HTTP_409_CONFLICT,
             detail="Could not add survey questions due to a database ID conflict. Please try again or contact support.",
         )
-    db.commit()
     return {"created": len(questions)}
