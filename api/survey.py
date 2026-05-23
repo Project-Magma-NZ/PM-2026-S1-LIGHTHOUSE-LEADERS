@@ -1,18 +1,22 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from db import SessionLocal
 from models import Survey, SurveyQuestion, SurveyResponse, ResponseAnswer
 from auth import get_current_user
 from survey_schemas import (
+    SurveyCreateIn,
     SurveyListItem,
     SurveyListItemWithStatus,
     SurveyDetailOut,
     SurveyQuestionOut,
     SubmitSurveyResponseIn,
     SubmitSurveyResponseOut,
+    SurveyQuestionsBulkCreateIn,
     SurveyResponseOut,
     ResponseAnswerOut,
+    SurveyUpdateIn,
 )
 
 router = APIRouter(prefix="/api/survey", tags=["survey"])
@@ -183,3 +187,87 @@ def get_my_response_for_survey(
         submitted_at=resp.submitted_at,
         answers=[ResponseAnswerOut(question_id=a.question_id, answer=a.answer) for a in answers],
     )
+
+def require_admin(current_user=Depends(get_current_user)):
+    if getattr(current_user, "role", None) != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")
+    return current_user
+
+@router.post("", status_code=status.HTTP_201_CREATED)
+def create_survey(
+    body: SurveyCreateIn,
+    db: Session = Depends(get_db),
+    _admin=Depends(require_admin),
+):
+    survey = Survey(
+        title=body.title,
+        audience=body.audience,
+        version=body.version,
+        status=body.status,
+    )
+    db.add(survey)
+    db.commit()
+    db.refresh(survey)
+    return survey
+
+@router.patch("/{survey_id}")
+def update_survey(
+    survey_id: int,
+    body: SurveyUpdateIn,
+    db: Session = Depends(get_db),
+    _admin=Depends(require_admin),
+):
+    survey = db.query(Survey).filter(Survey.id == survey_id).first()
+    if not survey:
+        raise HTTPException(status_code=404, detail="Survey not found")
+
+    if body.title is not None:
+        survey.title = body.title
+    if body.audience is not None:
+        survey.audience = body.audience
+    if body.version is not None:
+        survey.version = body.version
+    if body.status is not None:
+        survey.status = body.status
+
+    db.commit()
+    db.refresh(survey)
+    return survey
+
+@router.post("/{survey_id}/questions", status_code=status.HTTP_201_CREATED)
+def add_questions_bulk(
+    survey_id: int,
+    body: SurveyQuestionsBulkCreateIn,
+    db: Session = Depends(get_db),
+    _admin=Depends(require_admin),
+):
+    survey = db.query(Survey).filter(Survey.id == survey_id).first()
+    if not survey:
+        raise HTTPException(status_code=404, detail="Survey not found")
+
+    # optional: reject adding questions to active surveys
+    # if survey.status == "active": ...
+
+    questions = []
+    for q in body.questions:
+        questions.append(
+            SurveyQuestion(
+                survey_id=survey_id,
+                question_text=q.question_text,
+                category=q.category.lower().strip(),
+                question_type=q.question_type,
+                sort_order=q.sort_order,
+            )
+        )
+
+    db.add_all(questions)
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Could not add survey questions due to a database ID conflict. Please try again or contact support.",
+        )
+    db.commit()
+    return {"created": len(questions)}

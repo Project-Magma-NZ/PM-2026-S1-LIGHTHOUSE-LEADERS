@@ -51,6 +51,27 @@ export type SurveyListItemWithStatus = SurveyListItem & {
   submitted_at: string | null;
 };
 
+export type SurveyCreateIn = {
+  title: string;
+  audience: string;
+  version: number;
+  status?: "draft" | "active" | "archived";
+};
+
+export type SurveyUpdateIn = {
+  title?: string;
+  audience?: string;
+  version?: number;
+  status?: "draft" | "active" | "archived";
+};
+
+export type SurveyQuestionCreateIn = {
+  question_text: string;
+  category: string;
+  question_type: "text" | "rating";
+  sort_order: number;
+};
+
 export async function listAvailableSurveys(): Promise<SurveyListItemWithStatus[]> {
   const res = await api.get<SurveyListItemWithStatus[]>("/survey/available");
   return res.data;
@@ -76,5 +97,26 @@ export async function submitSurveyResponse(
 
 export async function getMySurveyResponse(surveyId: number): Promise<SurveyResponseOut> {
   const res = await api.get(`/survey/${surveyId}/my-response`);
+  return res.data;
+}
+
+export async function createSurvey(body: SurveyCreateIn): Promise<SurveyDetail> {
+  const res = await api.post<SurveyDetail>("/survey", body);
+  return res.data;
+}
+
+export async function addSurveyQuestions(
+  surveyId: number,
+  questions: SurveyQuestionCreateIn[]
+): Promise<{ created: number }> {
+  const res = await api.post<{ created: number }>(`/survey/${surveyId}/questions`, { questions });
+  return res.data;
+}
+
+export async function updateSurvey(
+  surveyId: number,
+  body: SurveyUpdateIn
+): Promise<SurveyDetail> {
+  const res = await api.patch<SurveyDetail>(`/survey/${surveyId}`, body);
   return res.data;
 }

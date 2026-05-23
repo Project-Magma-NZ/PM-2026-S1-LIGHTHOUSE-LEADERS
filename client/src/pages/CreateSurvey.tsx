@@ -1,11 +1,27 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, Trash2 } from 'lucide-react'
+import { createSurvey, addSurveyQuestions,  } from '../services/surveys'
 
 interface Question {
     id: string
     type: 'text' | 'rating'
     question: string
+}
+
+function getErrorMessage(err: any): string {
+    const data = err?.response?.data
+    if (!data) return err?.message ?? 'Request failed'
+
+    if (Array.isArray(data?.detail)) {
+        const first = data.detail[0]
+        const field = Array.isArray(first?.loc) ? first.loc[first.loc.length - 1] : 'field'
+        const msg = first?.msg ?? 'Invalid value'
+        return `${String(field)}: ${String(msg)}`
+    }
+
+    if (typeof data?.detail === 'string') return data.detail
+    return 'Request failed'
 }
 
 const CreateSurvey = () => {
@@ -15,6 +31,10 @@ const CreateSurvey = () => {
     const [questions, setQuestions] = useState<Question[]>([
         { id: '1', type: 'text', question: '' },
     ])
+    
+    const [submitting, setSubmitting] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+
 
     const addQuestion = () => {
         const newId = (questions.length + 1).toString()
@@ -31,11 +51,42 @@ const CreateSurvey = () => {
         setQuestions(questions.map((q) => (q.id === id ? { ...q, [field]: value } : q)))
     }
 
-    const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault()
         console.log('Survey created:', { surveyTitle, surveyDescription, questions })
-        navigate('/dashboard')
+        
+        setSubmitting(true)
+        setError(null)        
+        try {
+            // 1) Create the survey (MVP: hardcode audience/version/status)
+            const created = await createSurvey({
+                title: surveyTitle.trim(),
+                audience: 'students',
+                version: 1,
+                status: 'active',
+                // description: surveyDescription, // only if backend supports it
+            })
+
+            // 2) Add questions (MVP: assign a default category for now)
+            const payloadQuestions = questions.map((q, idx) => ({
+                question_text: q.question.trim(),
+                question_type: q.type,
+                category: 'vision', // TODO: add category selector in UI
+                sort_order: idx + 1,
+            }))
+
+            await addSurveyQuestions(created.id, payloadQuestions)
+
+            // 3) Done
+            navigate('/dashboard')
+        } catch (err: any) {
+            console.error("Create survey failed:", err)
+            setError(getErrorMessage(err))
+        } finally {
+            setSubmitting(false)
+        }
     }
+
 
     return (
         <div className="create-page">
@@ -57,6 +108,7 @@ const CreateSurvey = () => {
                                     required
                                     placeholder="Enter survey title"
                                     className="create-input"
+                                    disabled={submitting}
                                 />
                             </div>
                             <div className="create-field">
@@ -68,6 +120,7 @@ const CreateSurvey = () => {
                                     placeholder="Enter survey description"
                                     className="create-textarea"
                                     rows={4}
+                                    disabled={submitting}
                                 />
                             </div>
                         </div>
@@ -77,7 +130,7 @@ const CreateSurvey = () => {
                     <div className="create-card">
                         <div className="create-card-header">
                             <h2 className="create-card-title">Questions</h2>
-                            <button type="button" onClick={addQuestion} className="create-btn-primary">
+                            <button type="button" onClick={addQuestion} className="create-btn-primary" disabled={submitting}>
                                 <Plus className="create-btn-icon" />
                                 New Question
                             </button>
@@ -93,6 +146,7 @@ const CreateSurvey = () => {
                                                 type="button"
                                                 onClick={() => removeQuestion(question.id)}
                                                 className="create-btn-remove"
+                                                disabled={submitting}
                                             >
                                                 <Trash2 className="create-btn-icon" />
                                             </button>
@@ -128,17 +182,20 @@ const CreateSurvey = () => {
                         </div>
                     </div>
 
+                    {error && <p style={{ color: 'crimson', marginTop: 8 }}>{error}</p>}
+
                     {/* Actions */}
                     <div className="create-actions">
                         <button
                             type="button"
                             onClick={() => navigate('/dashboard')}
                             className="create-btn-outline"
+                            disabled={submitting}
                         >
                             Cancel
                         </button>
-                        <button type="submit" className="create-btn-submit">
-                            Create Survey
+                        <button type="submit" className="create-btn-submit" disabled={submitting}>
+                            {submitting ? 'Creating...' : 'Create Survey'}
                         </button>
                     </div>
                 </form>
