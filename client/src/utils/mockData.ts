@@ -101,6 +101,20 @@ export function generateMockAdminAnalyticsUsers(count: number = 15): MockAdminAn
         { name: 'School 3', classes: ['8A', '8B', '8C'] },
     ]
 
+    const roomPool = [
+        'Room 1', 'Room 1', 'Room 1', 'Room 1',
+        'Room 2', 'Room 2', 'Room 2',
+        'Room 3',
+        'Room 4', 'Room 4', 'Room 4', 'Room 4',
+        'Room 5', 'Room 5',
+        'Room 6', 'Room 6',
+        'Room 10', 'Room 10',
+        'Room 12', 'Room 12',
+        'Room 12', 'Room 12', 'Room 12', 'Room 12', 'Room 12', 'Room 12',
+        'Room 13',
+        'Room 14',
+        'Room 15', 'Room 15', 'Room 15', 'Room 15',
+    ]
     const names = [
         'Emma Smith', 'Liam Johnson', 'Olivia Williams', 'Noah Brown', 'Ava Jones',
         'Isabella Garcia', 'Sophia Miller', 'Mason Davis', 'Lucas Rodriguez', 'Mia Martinez',
@@ -113,10 +127,10 @@ export function generateMockAdminAnalyticsUsers(count: number = 15): MockAdminAn
     return Array.from({ length: count }, (_, i) => {
         const name = names[i % names.length]
         const school = schools[i % schools.length]
-        const className = school.classes[i % school.classes.length]
+        const className = roomPool[i % roomPool.length]
 
         // Generate plausible scores out of 7; sometimes missing (not completed)
-        const hasSurvey1 = Math.random() > 0.15
+        const hasSurvey1 = true
         const hasSurvey2 = Math.random() > 0.25
 
         const base = 3.2 + (i % 5) * 0.35 + (Math.random() - 0.5) * 0.4
