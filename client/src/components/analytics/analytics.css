@@ -118,3 +118,31 @@
 .analytics-table tbody tr:hover {
   background: rgba(127, 73, 178, 0.08);
 }
+
+.admin-school-stat-list {
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.admin-school-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* ✅ pushes number to the right */
+  gap: 12px;
+}
+
+.admin-school-stat-label {
+  font-size: 15px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.admin-school-stat-value {
+  font-size: 18px;
+  color: #111827;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: right; /* ✅ number aligned right */
+  font-variant-numeric: tabular-nums;
+}

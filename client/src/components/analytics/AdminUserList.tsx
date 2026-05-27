@@ -37,6 +37,9 @@ const AdminUserList = ({ users: _users, onSelectUser }: Props) => {
         return avg.toFixed(1)
     })()
 
+    const adminRows = useMemo(() => generateMockAdminAnalyticsUsers(30), [])
+
+
     const toUserData = (row: MockAdminAnalyticsUserRow): UserData => {
         const surveyCount = [row.survey1Score, row.survey2Score].filter(v => v != null).length
         const avg = row.survey2Score ?? row.survey1Score ?? 0
@@ -49,6 +52,20 @@ const AdminUserList = ({ users: _users, onSelectUser }: Props) => {
             averageScore: avg,
         }
     }
+
+    const schoolStats = useMemo(() => {
+        const bySchool = new Map<string, { school: string; totalUsers: number; survey2Completed: number }>()
+
+        for (const r of adminRows) {
+            const key = r.school || 'Unknown'
+            const cur = bySchool.get(key) ?? { school: key, totalUsers: 0, survey2Completed: 0 }
+            cur.totalUsers += 1
+            if (r.survey2Score != null) cur.survey2Completed += 1
+            bySchool.set(key, cur)
+        }
+
+        return Array.from(bySchool.values()).sort((a, b) => a.school.localeCompare(b.school))
+    }, [adminRows])
 
     return (
         <div className="analytics-page">
@@ -112,7 +129,38 @@ const AdminUserList = ({ users: _users, onSelectUser }: Props) => {
                         </p>
                     </div>
                 ) : (
-                    <div className="analytics-card admin-table-card">
+                    // <div className="analytics-card admin-stat-card">
+                    //     <div className="admin-stat-card-header">
+                    //         <Users className="admin-stat-icon" />
+                    //         <span className="admin-stat-card-label">Total Users</span>
+                    //     </div>
+                    //     <p className="admin-stat-card-value">{totalUsers}</p>
+                    // </div>
+                    
+                    <div className="analytics-card admin-stat-card">
+                        <div className="admin-stats-row">
+                            {schoolStats.map((s) => (
+                                <div key={s.school} className="analytics-card admin-stat-card admin-stat-card--school">
+                                    <div className="admin-stat-card-header">
+                                        <Users className="admin-stat-icon" />
+                                        <span className="admin-stat-card-label">{s.school}</span>
+                                    </div>
+
+                                    <div className="admin-school-stat-list">
+                                        <div className="admin-school-stat-row">
+                                            <div className="admin-school-stat-label">Total Users</div>
+                                            <div className="admin-school-stat-value">{s.totalUsers}</div>
+                                        </div>
+
+                                        <div className="admin-school-stat-row">
+                                            <div className="admin-school-stat-label">Survey 2</div>
+                                            <div className="admin-school-stat-value">{s.survey2Completed}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
                         <AdminAnalyticsTable
                             rows={filteredRows}
                             onRowClick={(row) => onSelectUser(toUserData(row))}

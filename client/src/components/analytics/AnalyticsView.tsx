@@ -5,6 +5,7 @@ import AnalyticsTable from './AnalyticsTable'
 import AdminAnalyticsTable from './AdminAnalyticsTable'
 import { generateMockAdminAnalyticsUsers } from '../../utils/mockData'
 import { useNavigate } from 'react-router-dom'
+//import { Users } from 'lucide-react'
 
 const capabilities = [
     { id: 'vision', name: 'Vision' },
