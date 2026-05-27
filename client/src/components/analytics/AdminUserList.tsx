@@ -1,42 +1,54 @@
-import { useState } from 'react'
-import { Search, Users, BarChart3, ChevronRight } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { Search, Users, BarChart3 } from 'lucide-react'
+import AdminAnalyticsTable from './AdminAnalyticsTable'
+import { generateMockAdminAnalyticsUsers, type MockAdminAnalyticsUserRow } from '../../utils/mockData'
+import './analytics.css'
 
-interface UserData {
-    id: string
-    name: string
-    email: string
-    surveyCount: number
-    latestSurveyDate: string
-    averageScore: number
-}
+type UserData = { id: string; name: string; email: string; surveyCount: number; latestSurveyDate: string; averageScore: number }
+
 
 type Props = {
     users: UserData[]
     onSelectUser: (user: UserData) => void
 }
-
-const getRelativeDate = (dateString: string) => {
-    const diffDays = Math.floor((Date.now() - new Date(dateString).getTime()) / 86400000)
-    if (diffDays === 0) return 'Today'
-    if (diffDays === 1) return 'Yesterday'
-    if (diffDays < 7) return `${diffDays} days ago`
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`
-    return new Date(dateString).toLocaleDateString('en-NZ', { month: 'short', day: 'numeric', year: 'numeric' })
-}
-
-const AdminUserList = ({ users, onSelectUser }: Props) => {
+const AdminUserList = ({ users: _users, onSelectUser }: Props) => {
     const [searchQuery, setSearchQuery] = useState('')
 
-    const filteredUsers = searchQuery.trim() === ''
-        ? users
-        : users.filter(u =>
-            u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            u.email.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+    // Seeded mock rows (new columns)
+    const rows = useMemo(() => generateMockAdminAnalyticsUsers(30), [])
 
-    const totalSurveys = users.reduce((sum, u) => sum + u.surveyCount, 0)
-    const platformAvg = users.length > 0
-        ? (users.reduce((sum, u) => sum + u.averageScore, 0) / users.length).toFixed(1) : '0.0'
+    const filteredRows: MockAdminAnalyticsUserRow[] =
+        searchQuery.trim() === ''
+            ? rows
+            : rows.filter(r =>
+                r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                r.userCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                r.school.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                r.className.toLowerCase().includes(searchQuery.toLowerCase())
+            )
+
+    // basic summary stats (optional)
+    const totalUsers = rows.length
+    const completedSurvey2 = rows.filter(r => r.survey2Score != null).length
+    const platformAvg = (() => {
+        const nums = rows.map(r => r.survey2Score).filter((n): n is number => typeof n === 'number')
+        if (nums.length === 0) return '—'
+        const avg = nums.reduce((a, b) => a + b, 0) / nums.length
+        return avg.toFixed(1)
+    })()
+
+    const toUserData = (row: MockAdminAnalyticsUserRow): UserData => {
+        const surveyCount = [row.survey1Score, row.survey2Score].filter(v => v != null).length
+        const avg = row.survey2Score ?? row.survey1Score ?? 0
+        return {
+            id: row.id,
+            name: row.name,
+            email: `${row.userCode.toLowerCase()}@example.com`,
+            surveyCount,
+            latestSurveyDate: new Date().toISOString(),
+            averageScore: avg,
+        }
+    }
 
     return (
         <div className="analytics-page">
@@ -55,19 +67,21 @@ const AdminUserList = ({ users, onSelectUser }: Props) => {
                             <Users className="admin-stat-icon" />
                             <span className="admin-stat-card-label">Total Users</span>
                         </div>
-                        <p className="admin-stat-card-value">{users.length}</p>
+                        <p className="admin-stat-card-value">{totalUsers}</p>
                     </div>
+
                     <div className="analytics-card admin-stat-card">
                         <div className="admin-stat-card-header">
                             <BarChart3 className="admin-stat-icon" />
-                            <span className="admin-stat-card-label">Total Surveys</span>
+                            <span className="admin-stat-card-label">Survey 2 Completed</span>
                         </div>
-                        <p className="admin-stat-card-value">{totalSurveys}</p>
+                        <p className="admin-stat-card-value">{completedSurvey2}</p>
                     </div>
+
                     <div className="analytics-card admin-stat-card">
                         <div className="admin-stat-card-header">
                             <BarChart3 className="admin-stat-icon" />
-                            <span className="admin-stat-card-label">Platform Average</span>
+                            <span className="admin-stat-card-label">Survey 2 Average</span>
                         </div>
                         <p className="admin-stat-card-value">{platformAvg}</p>
                     </div>
@@ -78,16 +92,16 @@ const AdminUserList = ({ users, onSelectUser }: Props) => {
                         <Search className="admin-search-icon" />
                         <input
                             type="text"
-                            placeholder="Search by name or email..."
+                            placeholder="Search by user code, name, school, or class..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="admin-search-input"
                         />
                     </div>
-                    <p className="admin-search-count">Showing {filteredUsers.length} of {users.length} users</p>
+                    <p className="admin-search-count">Showing {filteredRows.length} of {rows.length} users</p>
                 </div>
 
-                {filteredUsers.length === 0 ? (
+                {filteredRows.length === 0 ? (
                     <div className="analytics-empty">
                         <div className="analytics-empty-icon-wrap">
                             <Search className="analytics-empty-icon" />
@@ -99,53 +113,10 @@ const AdminUserList = ({ users, onSelectUser }: Props) => {
                     </div>
                 ) : (
                     <div className="analytics-card admin-table-card">
-                        <div className="analytics-table-wrap">
-                            <table className="analytics-table">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Surveys</th>
-                                        <th>Avg Score</th>
-                                        <th>Last Activity</th>
-                                        <th className="admin-table-action-col">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredUsers.map((user) => (
-                                        <tr key={user.id} className="admin-table-row" onClick={() => onSelectUser(user)}>
-                                            <td>
-                                                <div className="admin-user-cell">
-                                                    <div className="admin-avatar">
-                                                        {user.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                                                    </div>
-                                                    <span className="admin-user-name">{user.name}</span>
-                                                </div>
-                                            </td>
-                                            <td className="admin-user-email">{user.email}</td>
-                                            <td>
-                                                <span className="admin-survey-badge">
-                                                    {user.surveyCount} {user.surveyCount === 1 ? 'survey' : 'surveys'}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div className="admin-score-cell">
-                                                    <BarChart3 className="admin-score-icon" />
-                                                    <span className="admin-score-value">{user.averageScore.toFixed(1)}</span>
-                                                </div>
-                                            </td>
-                                            <td className="admin-date">{getRelativeDate(user.latestSurveyDate)}</td>
-                                            <td className="admin-table-action-col">
-                                                <button className="admin-view-btn">
-                                                    View Analytics
-                                                    <ChevronRight className="admin-view-btn-icon" />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        <AdminAnalyticsTable
+                            rows={filteredRows}
+                            onRowClick={(row) => onSelectUser(toUserData(row))}
+                        />
                     </div>
                 )}
             </div>

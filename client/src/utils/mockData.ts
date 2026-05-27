@@ -83,3 +83,54 @@ export function generateMockUsers() {
         }
     })
 }
+
+export type MockAdminAnalyticsUserRow = {
+    id: string
+    userCode: string
+    name: string
+    school: string
+    className: string
+    survey1Score: number | null
+    survey2Score: number | null
+}
+
+export function generateMockAdminAnalyticsUsers(count: number = 15): MockAdminAnalyticsUserRow[] {
+    const schools = [
+        { name: 'School 1', classes: ['10A', '10B', '9C', '9D'] },
+        { name: 'School 2', classes: ['11A', '11B', '12A'] },
+        { name: 'School 3', classes: ['8A', '8B', '8C'] },
+    ]
+
+    const names = [
+        'Emma Smith', 'Liam Johnson', 'Olivia Williams', 'Noah Brown', 'Ava Jones',
+        'Isabella Garcia', 'Sophia Miller', 'Mason Davis', 'Lucas Rodriguez', 'Mia Martinez',
+        'Ethan Hernandez', 'Charlotte Lopez', 'Amelia Wilson', 'Harper Anderson', 'Evelyn Thomas',
+        'James Taylor', 'Chloe Moore', 'Benjamin Clark', 'Grace Hall', 'Henry Young',
+    ]
+
+    const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n))
+
+    return Array.from({ length: count }, (_, i) => {
+        const name = names[i % names.length]
+        const school = schools[i % schools.length]
+        const className = school.classes[i % school.classes.length]
+
+        // Generate plausible scores out of 7; sometimes missing (not completed)
+        const hasSurvey1 = Math.random() > 0.15
+        const hasSurvey2 = Math.random() > 0.25
+
+        const base = 3.2 + (i % 5) * 0.35 + (Math.random() - 0.5) * 0.4
+        const s1 = hasSurvey1 ? clamp(base + (Math.random() - 0.5) * 0.6, 1, 7) : null
+        const s2 = hasSurvey2 ? clamp((s1 ?? base) + (Math.random() - 0.3) * 0.8, 1, 7) : null
+
+        return {
+            id: `admin-user-${i + 1}`,
+            userCode: `STU-${String(i + 1).padStart(4, '0')}`,
+            name,
+            school: school.name,
+            className,
+            survey1Score: s1 == null ? null : Number(s1.toFixed(1)),
+            survey2Score: s2 == null ? null : Number(s2.toFixed(1)),
+        }
+    })
+}
