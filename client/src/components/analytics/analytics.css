@@ -101,3 +101,20 @@
   border-color: rgba(244, 197, 66, 0.35);
   color: #8a5a00;
 }
+
+.analytics-table thead th {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+
+.analytics-table tbody tr:nth-child(odd) {
+  background: rgba(17, 24, 39, 0.03);
+}
+
+.analytics-table tbody tr:nth-child(even) {
+  background: rgba(17, 24, 39, 0.06);
+}
+
+.analytics-table tbody tr:hover {
+  background: rgba(127, 73, 178, 0.08);
+}
