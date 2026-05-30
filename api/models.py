@@ -39,7 +39,7 @@ class Survey(Base):
 # id, survey_id, question_text, category, question_type, sort_order
 class SurveyQuestion(Base):
     __tablename__ = "survey_questions"
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     survey_id = Column(Integer, ForeignKey("surveys.id"), nullable=False)
     question_text = Column(String, nullable=False)
     category = Column(String, nullable=True)  # e.g. which of the 7 pillars
