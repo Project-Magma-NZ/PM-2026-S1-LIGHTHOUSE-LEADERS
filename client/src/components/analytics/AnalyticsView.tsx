@@ -122,13 +122,13 @@ const AnalyticsView = ({ surveys, isAdmin }: Props) => {
                             </div>
                         </div>
 
-                        <AnalyticsTable
+                        {/* <AnalyticsTable
                             capabilities={capabilities}
                             latestSurvey={latestSurvey}
                             previousSurvey={previousSurvey}
                             showLatest={showLatest}
                             showPrevious={showPrevious}
-                        />
+                        /> */}
                     </>
                 )}
             </div>
