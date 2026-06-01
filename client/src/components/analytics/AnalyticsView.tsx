@@ -68,6 +68,14 @@ const AnalyticsView = ({ surveys, isAdmin }: Props) => {
                         </p>
 
                         <AdminAnalyticsTable rows={adminRows} onRowClick={(row) => navigate(`/admin/users/${row.id}`)} />
+
+                        <AnalyticsTable
+                            capabilities={capabilities}
+                            latestSurvey={latestSurvey}
+                            previousSurvey={previousSurvey}
+                            showLatest={showLatest}
+                            showPrevious={showPrevious}
+                        />
                     </div>
                 ) : (
                     <>
@@ -122,13 +130,7 @@ const AnalyticsView = ({ surveys, isAdmin }: Props) => {
                             </div>
                         </div>
 
-                        {/* <AnalyticsTable
-                            capabilities={capabilities}
-                            latestSurvey={latestSurvey}
-                            previousSurvey={previousSurvey}
-                            showLatest={showLatest}
-                            showPrevious={showPrevious}
-                        /> */}
+                        {/* Table hidden for students */}
                     </>
                 )}
             </div>
