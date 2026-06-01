@@ -7,36 +7,47 @@ type RatingQuestionProps = {
     onRate: (value: number) => void
 }
 
-const RatingQuestion = ({ id, title, badge, rating, onRate }: RatingQuestionProps) => {
-    const value = rating ?? 3
+const OPTIONS = [1, 2, 3, 4, 5]
 
+const RatingQuestion = ({ id, title, badge, rating, onRate }: RatingQuestionProps) => {
     return (
         <div id={id} className="survey-rating-question">
             {badge && <div className="survey-badge">{badge}</div>}
 
             <div className="survey-question-header">
                 <h2 className="survey-question">{title}</h2>
-                <p className="survey-question-subtitle">Rate yourself on a scale where the left is "Not at all" and the right is "Completely"</p>
+                <p className="survey-question-subtitle">
+                    Rate yourself where the left is "Not at all" and the right is "Completely"
+                </p>
             </div>
 
-            <div className="survey-rating-labels">
-                <span>Not at all</span>
-                <span>Completely</span>
+            <div
+                className="survey-radio-group"
+                role="radiogroup"
+                aria-labelledby={id + '-label'}
+            >
+                {OPTIONS.map((opt, idx) => (
+                    <label
+                        key={opt}
+                        className="survey-radio"
+                        aria-label={opt === 1 ? 'Not at all' : opt === 5 ? 'Completely' : `Option ${opt}`}
+                    >
+                        <input
+                            type="radio"
+                            name={id}
+                            value={opt}
+                            checked={rating === opt}
+                            onChange={() => onRate(opt)}
+                        />
+                        <span className="survey-radio-visual" aria-hidden="true" />
+                        <span className="sr-only">Value {opt}</span>
+                    </label>
+                ))}
             </div>
 
-            <div className="survey-range-wrap">
-                <input
-                    type="range"
-                    min={1}
-                    max={5}
-                    step={1}
-                    value={value}
-                    className="survey-range"
-                    aria-label={title}
-                    onChange={(e) => onRate(Number(e.target.value))}
-                />
-                {/* visually-hidden numeric value for screen readers */}
-                <span className="sr-only">Selected value: {value}</span>
+            <div className="survey-rating-labels survey-rating-labels--below">
+                <span className="survey-rating-label survey-rating-label--left">Not at all</span>
+                <span className="survey-rating-label survey-rating-label--right">Completely</span>
             </div>
         </div>
     )

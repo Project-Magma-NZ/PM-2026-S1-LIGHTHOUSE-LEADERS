@@ -56,3 +56,80 @@
 .survey-range:focus {
   box-shadow: 0 0 0 4px rgba(127,73,178,0.12);
 }
+
+.survey-rating-labels {
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 1rem;
+    color: #4b5563; 
+}
+
+.survey-radio-group {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0;
+  /* match labels spacing */
+  margin-top: 10px;
+  padding: 14px 25px; 
+}
+
+.survey-rating-labels--below {
+    padding: 0 6px;
+}
+
+.survey-radio input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* visual circle */
+.survey-radio {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.survey-radio-visual {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid rgba(127,73,178,0.16);
+  box-shadow: 0 1px 2px rgba(16,24,40,0.04);
+  transition: all 120ms ease;
+}
+
+/* checked */
+.survey-radio input[type="radio"]:checked + .survey-radio-visual {
+  background: #7f49b2; 
+  border-color: #7f49b2;
+  box-shadow: 0 6px 18px rgba(127,73,178,0.16);
+}
+
+/* focus ring for keyboard users */
+.survey-radio input[type="radio"]:focus + .survey-radio-visual {
+  outline: 3px solid rgba(127,73,178,0.12);
+  outline-offset: 3px;
+}
+
+/* visually-hidden text for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
