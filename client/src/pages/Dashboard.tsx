@@ -72,7 +72,7 @@ const Dashboard = () => {
                     <div className="dashboard-panel">
                         <div className="dashboard-panel-header">
                         <Clock className="dashboard-panel-icon" />
-                        <h2>Available Surveys</h2>
+                        <h2>Available Self Assessments</h2>
                         </div>
 
                         <div className="dashboard-panel-list">
@@ -116,7 +116,7 @@ const Dashboard = () => {
                     <div className="dashboard-panel">
                         <div className="dashboard-panel-header">
                         <CheckCircle className="dashboard-panel-icon" />
-                        <h2>Completed Surveys</h2>
+                        <h2>Completed Self Assessments</h2>
                         </div>
 
                         <div className="dashboard-panel-list">

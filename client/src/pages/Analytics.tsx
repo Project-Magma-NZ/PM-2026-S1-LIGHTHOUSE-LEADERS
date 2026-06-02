@@ -225,7 +225,7 @@ const Analytics = () => {
         <div className="analytics-page">
             <div className="analytics-inner">
                 <h1 className="analytics-heading">Analytics Dashboard</h1>
-                <AnalyticsView surveys={completedSurveys} isAdmin={true} />
+                <AnalyticsView surveys={completedSurveys} isAdmin={false} />
                 <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
                     <button onClick={() => navigate('/dashboard')} className="analytics-empty-btn">
                         Take Another Survey
