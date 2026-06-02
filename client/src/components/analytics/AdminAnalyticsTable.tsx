@@ -23,8 +23,8 @@ const AdminAnalyticsTable = ({ rows, onRowClick }: Props) => {
                         <th>Name</th>
                         <th>School</th>
                         <th>Class</th>
-                        <th>Survey 1 score</th>
-                        <th>Survey 2 score</th>
+                        <th>Previous score</th>
+                        <th>Latest score</th>
                         <th>Difference</th>
                     </tr>
                 </thead>

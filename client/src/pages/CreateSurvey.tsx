@@ -160,9 +160,10 @@ const CreateSurvey = () => {
                                                 value={question.type}
                                                 onChange={(e) => updateQuestion(question.id, 'type', e.target.value as 'text' | 'rating')}
                                                 className="create-select"
-                                            >
+                                            >   
+                                                <option value="rating">Rating (1-5)</option>
                                                 <option value="text">Text Response</option>
-                                                <option value="rating">Rating (1-7)</option>
+                                                
                                             </select>
                                         </div>
                                         <div className="create-field">

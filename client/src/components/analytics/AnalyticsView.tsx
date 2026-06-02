@@ -64,7 +64,7 @@ const AnalyticsView = ({ surveys, isAdmin }: Props) => {
                     <div className="analytics-card">
                         <h2 className="analytics-card-title">Student Analytics</h2>
                         <p className="analytics-framework-desc">
-                            Compare Survey 1 vs Survey 2 results and filter insights by school/class (mock data for now).
+                            Compare results and filter insights by school/class (mock data for now).
                         </p>
 
                         <AdminAnalyticsTable rows={adminRows} onRowClick={(row) => navigate(`/admin/users/${row.id}`)} />

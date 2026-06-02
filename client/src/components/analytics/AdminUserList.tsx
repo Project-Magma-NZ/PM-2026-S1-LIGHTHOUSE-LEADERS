@@ -78,32 +78,6 @@ const AdminUserList = ({ users: _users, onSelectUser }: Props) => {
                     <p className="admin-header-desc">View and analyze survey data for all students</p>
                 </div>
 
-                <div className="admin-stats-row">
-                    <div className="analytics-card admin-stat-card">
-                        <div className="admin-stat-card-header">
-                            <Users className="admin-stat-icon" />
-                            <span className="admin-stat-card-label">Total Users</span>
-                        </div>
-                        <p className="admin-stat-card-value">{totalUsers}</p>
-                    </div>
-
-                    <div className="analytics-card admin-stat-card">
-                        <div className="admin-stat-card-header">
-                            <BarChart3 className="admin-stat-icon" />
-                            <span className="admin-stat-card-label">Survey 2 Completed</span>
-                        </div>
-                        <p className="admin-stat-card-value">{completedSurvey2}</p>
-                    </div>
-
-                    <div className="analytics-card admin-stat-card">
-                        <div className="admin-stat-card-header">
-                            <BarChart3 className="admin-stat-icon" />
-                            <span className="admin-stat-card-label">Survey 2 Average</span>
-                        </div>
-                        <p className="admin-stat-card-value">{platformAvg}</p>
-                    </div>
-                </div>
-
                 <div className="analytics-card admin-search-card">
                     <div className="admin-search-wrap">
                         <Search className="admin-search-icon" />
@@ -117,6 +91,33 @@ const AdminUserList = ({ users: _users, onSelectUser }: Props) => {
                     </div>
                     <p className="admin-search-count">Showing {filteredRows.length} of {rows.length} users</p>
                 </div>
+
+                <div className="admin-stats-row">
+                    <div className="analytics-card admin-stat-card">
+                        <div className="admin-stat-card-header">
+                            <Users className="admin-stat-icon" />
+                            <span className="admin-stat-card-label">Total Users</span>
+                        </div>
+                        <p className="admin-stat-card-value">{totalUsers}</p>
+                    </div>
+
+                    <div className="analytics-card admin-stat-card">
+                        <div className="admin-stat-card-header">
+                            <BarChart3 className="admin-stat-icon" />
+                            <span className="admin-stat-card-label">Assessment 2 Completed</span>
+                        </div>
+                        <p className="admin-stat-card-value">{completedSurvey2}</p>
+                    </div>
+
+                    <div className="analytics-card admin-stat-card">
+                        <div className="admin-stat-card-header">
+                            <BarChart3 className="admin-stat-icon" />
+                            <span className="admin-stat-card-label">Assessment 2 Average</span>
+                        </div>
+                        <p className="admin-stat-card-value">{platformAvg}</p>
+                    </div>
+                </div>
+
 
                 {filteredRows.length === 0 ? (
                     <div className="analytics-empty">
@@ -153,7 +154,7 @@ const AdminUserList = ({ users: _users, onSelectUser }: Props) => {
                                         </div>
 
                                         <div className="admin-school-stat-row">
-                                            <div className="admin-school-stat-label">Survey 2</div>
+                                            <div className="admin-school-stat-label">Assessments Completed</div>
                                             <div className="admin-school-stat-value">{s.survey2Completed}</div>
                                         </div>
                                     </div>
