@@ -54,7 +54,7 @@ const Navbar = () => {
                                     <NavLink to="/adminDashboard">Admin Dashboard</NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to="/create-survey">Create Survey</NavLink>
+                                    <NavLink to="/create-survey">Create Assessment</NavLink>
                                 </li>
                             </>
                         )}
