@@ -75,7 +75,7 @@ const AdminUserList = ({ users: _users, onSelectUser }: Props) => {
                         <Users className="admin-header-icon" />
                         <h1 className="analytics-heading">All Users</h1>
                     </div>
-                    <p className="admin-header-desc">View and analyze survey data for all students</p>
+                    <p className="admin-header-desc">View and analyze student data</p>
                 </div>
 
                 <div className="analytics-card admin-search-card">

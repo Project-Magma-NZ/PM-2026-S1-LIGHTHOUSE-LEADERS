@@ -39,7 +39,7 @@ const AdminUserDetail = ({ user, surveys, onBack }: Props) => {
                         <div className="analytics-empty-icon-wrap">
                             <Image className="analytics-empty-icon" />
                         </div>
-                        <h2 className="analytics-empty-title">No Survey Data Yet</h2>
+                        <h2 className="analytics-empty-title">No Data Yet</h2>
                         <p className="analytics-empty-desc">This student hasn't completed any assessments yet.</p>
                     </div>
                 ) : (

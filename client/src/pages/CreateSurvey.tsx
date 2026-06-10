@@ -91,22 +91,22 @@ const CreateSurvey = () => {
     return (
         <div className="create-page">
             <div className="create-inner">
-                <h1 className="create-heading">Create New Survey</h1>
+                <h1 className="create-heading">Create New Self Assessment</h1>
 
                 <form onSubmit={handleSubmit} className="create-form">
                     {/* Survey Details */}
                     <div className="create-card">
-                        <h2 className="create-card-title">Survey Details</h2>
+                        <h2 className="create-card-title">Assessment Details</h2>
                         <div className="create-fields">
                             <div className="create-field">
-                                <label htmlFor="title" className="create-label">Survey Title</label>
+                                <label htmlFor="title" className="create-label">Assessment Title</label>
                                 <input
                                     id="title"
                                     type="text"
                                     value={surveyTitle}
                                     onChange={(e) => setSurveyTitle(e.target.value)}
                                     required
-                                    placeholder="Enter survey title"
+                                    placeholder="Enter assessment title"
                                     className="create-input"
                                     disabled={submitting}
                                 />
