@@ -117,7 +117,7 @@ const AnalyticsView = ({ surveys, isAdmin }: Props) => {
 
                             <div className="analytics-framework">
                                 <h3 className="analytics-framework-title">SHINE Framework</h3>
-                                <p className="analytics-framework-desc">Each capability is scored on a scale from 1–7.</p>
+                                <p className="analytics-framework-desc">Each capability is scored on a scale from 1–5.</p>
                                 <div className="analytics-framework-grid">
                                     <div><strong>Vision:</strong> See possibilities & imagine future</div>
                                     <div><strong>Strategy:</strong> Plan and achieve goals</div>
