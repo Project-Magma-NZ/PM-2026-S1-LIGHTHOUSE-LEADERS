@@ -162,7 +162,7 @@ const CreateSurvey = () => {
                                                 className="create-select"
                                             >
                                                 <option value="text">Text Response</option>
-                                                <option value="rating">Rating (1-7)</option>
+                                                <option value="rating">Rating (1-5)</option>
                                             </select>
                                         </div>
                                         <div className="create-field">
