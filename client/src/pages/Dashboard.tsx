@@ -1,11 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CheckCircle, Clock, PlayCircle } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useSurveys } from '../hooks/useSurveys';
+import { useAuth } from "../context/AuthProvider";
 
 const Dashboard = () => {
 
     const { surveys, loading, error } = useSurveys();
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const todo = useMemo(
         () => surveys.filter((s) => s.status === "active" && !s.has_submitted),
         [surveys]
@@ -19,8 +22,19 @@ const Dashboard = () => {
     const firstTodo = todo[0];
     const firstCompleted = completed[0];
 
+    const isAdmin = user?.role === "admin";
+
     //const [completedSurveys, setCompletedSurveys] = useState<any[]>([]);
     //const [hasInitialSurvey, setHasInitialSurvey] = useState(false);
+
+    useEffect(() => {
+        // If admin, send them to the admin analytics page (admin dashboard)
+        if (isAdmin) {
+            navigate("/analytics", { replace: true });
+        }
+    }, [isAdmin, navigate]);
+
+    if (isAdmin) return null; // avoid rendering student UI while redirecting
 
     useEffect(() => {
         const loadSurveys = () => {

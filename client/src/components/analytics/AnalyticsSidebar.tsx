@@ -45,7 +45,7 @@ const AnalyticsSidebar = ({
                             <span>Previous ({getDateLabel(previousSurvey.date)})</span>
                         </label>
                     ) : (
-                        <p className="analytics-layer-hint">Complete another survey to compare</p>
+                        <p className="analytics-layer-hint">Complete another assessment to compare</p>
                     )}
                 </div>
             </div>

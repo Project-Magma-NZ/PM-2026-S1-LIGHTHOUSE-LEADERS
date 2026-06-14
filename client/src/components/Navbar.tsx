@@ -33,21 +33,38 @@ const Navbar = () => {
         <div className="navbar">
             <img onClick={() => navigate('/')} src={assets.logo} alt="Lighthouse Leaders logo" className="logo" />
             <ul>
-                <li>
-                    <NavLink to="/dashboard" end>
-                        Surveys
-                    </NavLink>
-                </li>
-                {isAuthenticated && isAdmin && ( // only admins see this
+                
+                {isAuthenticated ? (
+                    <>  
+                    {!isAdmin  && (
+                        <>
+                        <li>
+                            <NavLink to="/dashboard" end>Dashboard</NavLink>
+                        </li>
+                        <li>
+                            <NavLink to="/analytics">Analytics</NavLink>
+                        </li>
+                        </>
+                        
+                    )}                                             
+
+                        {isAdmin && (
+                            <>
+                                <li>
+                                    <NavLink to="/adminDashboard">Admin Dashboard</NavLink>
+                                </li>
+                                <li>
+                                    <NavLink to="/create-survey">Create Assessment</NavLink>
+                                </li>
+                            </>
+                        )}
+                    </>
+                ) : (
                     <li>
-                        <NavLink to="/create-survey">Create Survey</NavLink>
+                        <NavLink to="/login">Login</NavLink>
                     </li>
                 )}
-                <li>
-                    <NavLink to="/analytics">
-                        Analytics
-                    </NavLink>
-                </li>
+                
             </ul>
             <div className="profile">
                 {isAuthenticated ? (
