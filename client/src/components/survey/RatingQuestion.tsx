@@ -12,7 +12,7 @@ const OPTIONS = [1, 2, 3, 4, 5]
 const RatingQuestion = ({ id, title, badge, rating, onRate }: RatingQuestionProps) => {
     return (
         <div id={id} className="survey-rating-question">
-            {badge && <div className="survey-badge">{badge}</div>}
+            {/* {badge && <div className="survey-badge">{badge}</div>} */}
 
             <div className="survey-question-header">
                 <h2 className="survey-question">{title}</h2>
