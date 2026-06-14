@@ -17,7 +17,7 @@ const RatingQuestion = ({ id, title, badge, rating, onRate }: RatingQuestionProp
             <div className="survey-question-header">
                 <h2 className="survey-question">{title}</h2>
                 <p className="survey-question-subtitle">
-                    Rate yourself where the left is "Not at all" and the right is "Completely"
+                    Rate yourself where the left is "Not like me" and the right is "A lot like me" 
                 </p>
             </div>
 
@@ -30,7 +30,7 @@ const RatingQuestion = ({ id, title, badge, rating, onRate }: RatingQuestionProp
                     <label
                         key={opt}
                         className="survey-radio"
-                        aria-label={opt === 1 ? 'Not at all' : opt === 5 ? 'Completely' : `Option ${opt}`}
+                        aria-label={opt === 1 ? 'Not like me' : opt === 3 ? 'Sometimes like me' : opt === 5 ? 'A lot like me' : `Option ${opt}`}
                     >
                         <input
                             type="radio"
@@ -46,8 +46,9 @@ const RatingQuestion = ({ id, title, badge, rating, onRate }: RatingQuestionProp
             </div>
 
             <div className="survey-rating-labels survey-rating-labels--below">
-                <span className="survey-rating-label survey-rating-label--left">Not at all</span>
-                <span className="survey-rating-label survey-rating-label--right">Completely</span>
+                <span className="survey-rating-label survey-rating-label--left">Not like me</span>
+                <span className="survey-rating-label survey-rating-label--center">Sometimes like me</span>
+                <span className="survey-rating-label survey-rating-label--right">A lot like me</span>
             </div>
         </div>
     )

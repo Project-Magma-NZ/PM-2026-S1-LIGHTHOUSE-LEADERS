@@ -8,13 +8,13 @@ import { useNavigate } from 'react-router-dom'
 //import { Users } from 'lucide-react'
 
 const capabilities = [
-    { id: 'vision', name: 'Vision' },
-    { id: 'strategy', name: 'Strategy' },
-    { id: 'resources', name: 'Resources' },
-    { id: 'risk', name: 'Risk' },
-    { id: 'action', name: 'Action' },
-    { id: 'connection', name: 'Connection' },
-    { id: 'purpose', name: 'Purpose' },
+    { id: 'vision', name: 'Purpose' },
+    { id: 'strategy', name: 'Confidence' },
+    { id: 'resources', name: 'Strengths' },
+    { id: 'risk', name: 'Resilience' },
+    { id: 'action', name: 'Motivation' },
+    { id: 'connection', name: 'Engagement' },
+    { id: 'purpose', name: 'Hope' },
 ]
 
 type Props = {
@@ -81,7 +81,7 @@ const AnalyticsView = ({ surveys, isAdmin }: Props) => {
                     <>
                         <div className="analytics-card">
                             <h2 className="analytics-card-title">SHINE Leader Self-Assessment Results</h2>
-                            <ResponsiveContainer width="100%" height={500}>
+                            <ResponsiveContainer width="100%" height={640}>
                                 <RadarChart data={chartData} cx="50%" cy="50%" outerRadius="80%">
                                     <PolarGrid stroke="#e5e7eb" />
                                     <PolarAngleAxis dataKey="category" tick={{ fill: '#1f2937', fontSize: 13, fontWeight: 600 }} />

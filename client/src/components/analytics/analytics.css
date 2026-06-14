@@ -146,3 +146,7 @@
   text-align: right; /* ✅ number aligned right */
   font-variant-numeric: tabular-nums;
 }
+
+.analytics-main {
+  padding: 24px;
+}
