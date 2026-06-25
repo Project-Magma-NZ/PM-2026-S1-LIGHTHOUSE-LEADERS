@@ -3,10 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 from sqlalchemy.orm import Session
 from .db import SessionLocal
-from models import User
-from auth import router as auth_router
-from survey import router as survey_router
-from management import router as management_router
+from .models import User
+from .auth import router as auth_router
+from .survey import router as survey_router
+from .management import router as management_router
 
 app = FastAPI(title="Survey API")
 
