@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from .db import SessionLocal
-from .models import Survey, SurveyQuestion, SurveyResponse, ResponseAnswer
-from .auth import get_current_user
-from .survey_schemas import (
+from db import SessionLocal
+from models import Survey, SurveyQuestion, SurveyResponse, ResponseAnswer
+from auth import get_current_user
+from survey_schemas import (
     SurveyCreateIn,
     SurveyListItem,
     SurveyListItemWithStatus,
