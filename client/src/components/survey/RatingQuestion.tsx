@@ -9,7 +9,7 @@ type RatingQuestionProps = {
 
 const OPTIONS = [1, 2, 3, 4, 5]
 
-const RatingQuestion = ({ id, title, badge, rating, onRate }: RatingQuestionProps) => {
+const RatingQuestion = ({ id, title, rating, onRate }: RatingQuestionProps) => {
     return (
         <div id={id} className="survey-rating-question">
             {/* {badge && <div className="survey-badge">{badge}</div>} */}
@@ -26,7 +26,7 @@ const RatingQuestion = ({ id, title, badge, rating, onRate }: RatingQuestionProp
                 role="radiogroup"
                 aria-labelledby={id + '-label'}
             >
-                {OPTIONS.map((opt, idx) => (
+                {OPTIONS.map((opt) => (
                     <label
                         key={opt}
                         className="survey-radio"
