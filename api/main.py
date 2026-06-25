@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from mangum import Mangum
 from sqlalchemy.orm import Session
 from db import SessionLocal
 from models import User
@@ -37,3 +38,5 @@ def health():
 @app.get("/api/users")
 def list_users(db: Session = Depends(get_db)):
     return db.query(User).all()
+
+handler = Mangum(app, lifespan="off")  # Use lifespan="off" to disable lifespan events for AWS Lambda
