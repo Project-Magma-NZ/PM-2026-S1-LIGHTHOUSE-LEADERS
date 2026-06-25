@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from db import SessionLocal
-from models import User, Survey, SurveyQuestion, SurveyResponse, ResponseAnswer
-from auth import get_current_user
-from management_schemas import ManagementUserOut, UserSurveyOut
+from .db import SessionLocal
+from .models import User, Survey, SurveyQuestion, SurveyResponse, ResponseAnswer
+from .auth import get_current_user
+from .management_schemas import ManagementUserOut, UserSurveyOut
 
 router = APIRouter(prefix="/api/management", tags=["management"])
 
