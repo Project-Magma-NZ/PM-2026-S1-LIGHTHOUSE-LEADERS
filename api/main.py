@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 from sqlalchemy.orm import Session
-from db import SessionLocal
+from .db import SessionLocal
 from models import User
 from auth import router as auth_router
 from survey import router as survey_router
