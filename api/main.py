@@ -9,7 +9,7 @@ from management import router as management_router
 
 app = FastAPI(title="Survey API")
 
-origins = ["http://localhost:5173"]
+origins = ["http://localhost:5173", "*"]
 
 app.add_middleware(
     CORSMiddleware,
