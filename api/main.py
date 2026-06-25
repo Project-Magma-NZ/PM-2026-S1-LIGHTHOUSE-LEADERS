@@ -38,3 +38,5 @@ def health():
 @app.get("/api/users")
 def list_users(db: Session = Depends(get_db)):
     return db.query(User).all()
+
+handler = Mangum(app, lifespan="off")  # Use lifespan="off" to disable lifespan events for AWS Lambda
