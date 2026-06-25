@@ -1,7 +1,6 @@
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Any
-
 from dotenv import load_dotenv
 from jose import jwt
 from passlib.context import CryptContext
