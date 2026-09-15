@@ -196,10 +196,10 @@ source .venv/bin/activate
 # On Windows:
 
 
-python -m venv .venv
+python -m venv venv
 
 
-.venv\Scripts\activate
+venv\Scripts\activate
 
 
 
@@ -286,11 +286,10 @@ You will need to run each part of the application in a separate terminal.
 cd api
 
 
-source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+source .venv/bin/activate  # or .\venv\Scripts\activate on Windows
 
-
-uvicorn main:app --reload --port 5000
-
+#update
+uvicorn api.main:app --reload --port 5000
 
 ```
 
